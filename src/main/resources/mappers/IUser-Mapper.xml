@@ -124,7 +124,7 @@
             <if test="userNote != null">
                 userNote = #{userNote}
             </if>
-            <if test="userRoleInfo.userRoleId">
+            <if test="userRoleInfo != null and userRoleInfo.userRoleId != null">
                 userRoleId = #{userRoleInfo.userRoleId}
             </if>
         </trim>
@@ -132,8 +132,17 @@
         userNum = #{userNum}
     </update>
 
-    <delete id="deleteClassInfoByClassId" flushCache="true" parameterType="String"
+    <delete id="deleteUserInfoByUserNum" flushCache="true" parameterType="String"
             statementType="PREPARED" timeout="20000">
-        DELETE FROM ClassInfo WHERE classId = #{classId}
+        DELETE FROM UserInfo WHERE userNum = #{userNum}
+    </delete>
+
+    <delete id="deleteUserInfoByUserNums" flushCache="true" parameterType="String"
+            statementType="PREPARED" timeout="20000">
+        DELETE FROM UserInfo WHERE userNum in (
+        <foreach collection="userNums" item="String">
+            #{userNum}
+        </foreach>
+        )
     </delete>
 </mapper>
