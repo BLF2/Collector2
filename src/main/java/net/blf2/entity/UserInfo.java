@@ -5,13 +5,13 @@ package net.blf2.entity;
  * 用户信息
  */
 public class UserInfo {
-    private String userNum;
-    private String userName;
-    private String userPswd;
-    private String userPhone;
-    private String userMajorityClass;
-    private String userNote;
-    private UserRoleInfo userRoleInfo;
+    private String userNum;//学号
+    private String userName;//姓名
+    private String userPswd;//密码
+    private String userPhone;//手机号
+    private String userMajorityClass;//主修班级
+    private String userNote;//用户备注
+    private UserRoleInfo userRoleInfo;//用户角色信息
 
     public String getUserNum() {
         return userNum;

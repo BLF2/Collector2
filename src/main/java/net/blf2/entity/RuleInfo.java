@@ -5,8 +5,8 @@ package net.blf2.entity;
  * 权限信息
  */
 public class RuleInfo {
-    private String ruleId;
-    private String ruleName;
+    private String ruleId;//权限id
+    private String ruleName;//权限名称
 
     public String getRuleId() {
         return ruleId;

@@ -7,10 +7,10 @@ import java.util.List;
  * 用户角色
  */
 public class UserRoleInfo {
-    private String userRoleId;
-    private String userRoleName;
-    private String userRoleNote;
-    private List<RuleInfo> ruleInfoList;
+    private String userRoleId;//用户角色Id
+    private String userRoleName;//用户角色名称
+    private String userRoleNote;//用户角色备注
+    private List<RuleInfo> ruleInfoList;//具有的权限
 
     public String getUserRoleId() {
         return userRoleId;
