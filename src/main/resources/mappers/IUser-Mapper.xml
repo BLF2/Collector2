@@ -139,10 +139,9 @@
 
     <delete id="deleteUserInfoByUserNums" flushCache="true" parameterType="String"
             statementType="PREPARED" timeout="20000">
-        DELETE FROM UserInfo WHERE userNum in (
-        <foreach collection="userNums" item="String">
+        DELETE FROM UserInfo WHERE userNum in
+        <foreach collection="userNums" item="userNum" index="index" open="(" close=")" separator=",">
             #{userNum}
         </foreach>
-        )
     </delete>
 </mapper>
