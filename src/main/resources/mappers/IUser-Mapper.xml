@@ -37,11 +37,12 @@
     <sql id="JoinIn">
         FROM UserInfo
         LEFT OUTER JOIN UserRoleInfo ON UserInfo.userRoleId = UserRoleInfo.userRoleId
-        LEFT OUTER JOIN RuleInfo ON UserRoleInfo.userRoleId =
+        LEFT OUTER JOIN UserRoleRuleRelation ON UserRoleInfo.userRoleId = UserRoleRuleRelation.relationRoleId
+        LEFT OUTER JOIN RuleInfo ON UserRoleRuleRelation.relationRuleId = RuleInfo.ruleId
     </sql>
 
-    <sql id="insertUserInfo">
-        userNum,userName,userPswd,userPhone,userMajorityClass,userNote
+    <sql id="insertUserInfoColumns">
+        userNum,userName,userPswd,userPhone,userMajorityClass,userNote,userRoleId
     </sql>
 
     <select id="queryUserInfoByUserNum" resultMap="UserInfoResultMap" parameterType="String"
@@ -52,94 +53,94 @@
         <include refid="RuleInfoColumns" />
         <include refid="JoinIn" />
         WHERE
-        ClassInfo.classId = #{classId}
+        UserInfo.userNum = #{userNum}
     </select>
 
-    <select id="queryClassInfoAll" statementType="PREPARED" parameterType="String"
-            resultMap="ClassInfoResultMap">
+    <select id="queryUserInfoAll" statementType="PREPARED" resultMap="UserInfoResultMap">
         SELECT
-        <include refid="ClassInfoColumns"/>,
-        <include refid="UserInfoColumns" />,
-        <include refid="UserRoleInfoColumns" />
+        <include refid="UserInfoColumns"/>,
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
         <include refid="JoinIn" />
     </select>
 
-    <select id="queryClassIdByMonitorId" statementType="PREPARED" parameterType="String"
-            resultType="String">
+    <select id="queryUserInfoByUserPhone" statementType="PREPARED" parameterType="String"
+            resultMap="UserInfoResultMap">
         SELECT
-        ClassInfo.classId
-        FROM
-        ClassInfo
-        WHERE
-        ClassInfo.monitorId = #{monitorId}
-    </select>
-
-    <select id="queryClassIdByClassMajorNameGradeNum" statementType="PREPARED" parameterType="String"
-            resultType="String">
-        SELECT
-        ClassInfo.classId
-        FROM
-        ClassInfo
-        WHERE
-        ClassInfo.majorName = #{majorName}
-        AND
-        ClassInfo.classGrade = #{classGrade}
-        AND
-        ClassInfo.classNum = #{classNum}
-    </select>
-
-    <select id="queryClassInfoByMonitorId" statementType="PREPARED" parameterType="String"
-            resultMap="ClassInfoResultMap">
-        SELECT
-        <include refid="ClassInfoColumns"/>,
-        <include refid="UserInfoColumns" />,
-        <include refid="UserRoleInfoColumns" />
+        <include refid="UserInfoColumns"/>,
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
         <include refid="JoinIn" />
         WHERE
-        ClassInfo.monitorId = #{monitorId}
+        UserInfo.userPhone = #{userPhone}
     </select>
 
-    <select id="queryMajorNameGradeNums" statementType="PREPARED" resultType="String">
-        SELECT CONCAT(ClassInfo.majorName,ClassInfo.classGrade,ClassInfo.classNum)
+    <select id="queryUserInfoByUserRoleId" statementType="PREPARED" parameterType="String"
+            resultMap="UserInfoResultMap">
+        SELECT
+        <include refid="UserInfoColumns"/>,
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
+        <include refid="JoinIn" />
+        WHERE
+        UserInfo.userRoleId = #{userRoleId}
+    </select>
+
+    <select id="queryUserNumByUserPhone" statementType="PREPARED" resultType="String" parameterType="String">
+        SELECT
+        UserInfo.userNum
         FROM
-        ClassInfo
+        UserInfo
+        WHERE
+        UserInfo.userPhone = #{userPhone}
     </select>
 
-    <insert id="insertClassInfo">
-        INSERT INTO ClassInfo(
-        <include refid="insertClassInfoColumns" />
+    <insert id="insertUserInfo">
+        INSERT INTO UserInfo(
+        <include refid="insertUserInfoColumns" />
+        <!--userNum,userName,userPswd,userPhone,userMajorityClass,userNote,userRoleId -->
         )
         VALUES(
-        #{classId},#{majorName},#{classGrade},#{classNum},#{monitorInfo.userId},#{classNote}
+        #{userNum},#{userName},#{userPswd},#{userPhone},#{userMajorityClass},#{userNote},#{userRoleInfo.userRoleId}
         )
     </insert>
 
-    <update id="updateClassInfo" statementType="PREPARED" flushCache="true" timeout="20000">
+    <update id="updateUserInfo" statementType="PREPARED" flushCache="true" timeout="20000">
         UPDATE
-        ClassInfo
+        UserInfo
         <trim prefix="set" suffixOverrides=",">
-            <if test="majorName != null">
-                majorName = #{majorName},
+            <if test="userName != null">
+                userName = #{userName},
             </if>
-            <if test="classGrade != null">
-                classGrade = #{classGrade},
+            <if test="userPswd != null">
+                userPswd = #{userPswd},
             </if>
-            <if test="classNum != null">
-                classNum = #{classNum},
+            <if test="userPhone != null">
+                userPhone = #{userPhone},
             </if>
-            <if test="monitorInfo.userId != null">
-                monitorId = #{monitorInfo.userId},
+            <if test="userMajorityClass != null">
+                userMajorityClass = #{userMajorityClass},
             </if>
-            <if test="classNote != null">
-                classNote = #{classNote}
+            <if test="userNote != null">
+                userNote = #{userNote}
+            </if>
+            <if test="userRoleInfo != null and userRoleInfo.userRoleId != null">
+                userRoleId = #{userRoleInfo.userRoleId}
             </if>
         </trim>
         WHERE
-        classId = #{classId}
+        userNum = #{userNum}
     </update>
 
-    <delete id="deleteClassInfoByClassId" flushCache="true" parameterType="String"
+    <delete id="deleteUserInfoByUserNum" flushCache="true" parameterType="String"
             statementType="PREPARED" timeout="20000">
-        DELETE FROM ClassInfo WHERE classId = #{classId}
+        DELETE FROM UserInfo WHERE userNum = #{userNum}
+    </delete>
+
+    <delete id="deleteUserInfoByUserNums" flushCache="true" statementType="PREPARED" timeout="20000">
+        DELETE FROM UserInfo WHERE userNum in
+        <foreach collection="list" item="userNum" index="index" open="(" close=")" separator=",">
+            #{userNum}
+        </foreach>
     </delete>
 </mapper>

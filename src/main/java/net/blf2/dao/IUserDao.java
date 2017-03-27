@@ -17,6 +17,6 @@ public interface IUserDao {
     UserInfo queryUserInfoByUserNum(String userNum);//根据学号查询信息
     List<UserInfo> queryUserInfoAll();//查询所有信息
     UserInfo queryUserInfoByUserPhone(String userPhone);//根据手机号查询信息
-    List<UserInfo> queryUserInfoByUserRole(UserRoleInfo userRoleInfo);//根据权限查询信息
+    List<UserInfo> queryUserInfoByUserRoleId(String userRoleId);//根据权限查询信息
     String queryUserNumByUserPhone(String userPhone);//根据用户手机号查询学号
 }

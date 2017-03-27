@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.blf2.dao.IRuleDao">
+
+    <resultMap id="RuleInfoResultMap" type="net.blf2.entity.RuleInfo">
+        <id property="ruleId" column="ruleId" />
+        <result property="ruleName" column="ruleName"/>
+    </resultMap>
+
+    <sql id="RuleInfoColumns">
+        RuleInfo.ruleId,RuleInfo.ruleName
+    </sql>
+    <sql id="InsertRuleInfoColumns">
+        ruleId,ruleName
+    </sql>
+    <insert id="insertRuleInfo" flushCache="true" statementType="PREPARED" timeout="20000">
+        INSERT INTO RuleInfo(
+        <include refid="InsertRuleInfoColumns"/>
+        )VALUES (
+        #{ruleId},#{ruleName}
+        )
+    </insert>
+
+    <update id="updateRuleInfo" timeout="20000" statementType="PREPARED" flushCache="true">
+        UPDATE RuleInfo
+        <set>
+            <if test="ruleName != null">
+                ruleName = #{ruleName}
+            </if>
+        </set>
+        WHERE
+        ruleId = #{ruleId}
+    </update>
+
+    <delete id="deleteRuleInfoByRuleId" flushCache="true" statementType="PREPARED">
+        DELETE FROM RuleInfo WHERE ruleId = #{ruleId}
+    </delete>
+    <delete id="deleteRuleInfoByRuleIds" flushCache="true" statementType="PREPARED">
+        DELETE FROM RuleInfo WHERE ruleId IN
+        <foreach collection="list" item="ruleId" index="index" open="(" close=")" separator=",">
+            #{ruleId}
+        </foreach>
+    </delete>
+    <select id="queryRuleInfoAll" resultMap="RuleInfoResultMap" resultType="net.blf2.entity.RuleInfo">
+        SELECT
+        <include refid="RuleInfoColumns" />
+        FROM RuleInfo
+    </select>
+
+    <select id="queryRuleInfoByRuleId" resultType="net.blf2.entity.RuleInfo" resultMap="RuleInfoResultMap">
+        SELECT
+        <include refid="RuleInfoColumns" />
+        FROM RuleInfo
+        WHERE ruleId = #{ruleId}
+    </select>
+</mapper>
