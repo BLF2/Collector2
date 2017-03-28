@@ -13,7 +13,7 @@
     <sql id="InsertRuleInfoColumns">
         ruleId,ruleName
     </sql>
-    <insert id="insertRuleInfo" flushCache="true" statementType="PREPARED" timeout="20000">
+    <insert id="insertRuleInfo" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="RuleInfo">
         INSERT INTO RuleInfo(
         <include refid="InsertRuleInfoColumns"/>
         )VALUES (
@@ -21,7 +21,7 @@
         )
     </insert>
 
-    <update id="updateRuleInfo" timeout="20000" statementType="PREPARED" flushCache="true">
+    <update id="updateRuleInfo" timeout="20000" statementType="PREPARED" flushCache="true" parameterType="net.blf2.entity.RuleInfo">
         UPDATE RuleInfo
         <set>
             <if test="ruleName != null">
@@ -41,13 +41,13 @@
             #{ruleId}
         </foreach>
     </delete>
-    <select id="queryRuleInfoAll" resultMap="RuleInfoResultMap" resultType="net.blf2.entity.RuleInfo">
+    <select id="queryRuleInfoAll" resultMap="RuleInfoResultMap" parameterType="String">
         SELECT
         <include refid="RuleInfoColumns" />
         FROM RuleInfo
     </select>
 
-    <select id="queryRuleInfoByRuleId" resultType="net.blf2.entity.RuleInfo" resultMap="RuleInfoResultMap">
+    <select id="queryRuleInfoByRuleId" resultMap="RuleInfoResultMap" parameterType="String">
         SELECT
         <include refid="RuleInfoColumns" />
         FROM RuleInfo
