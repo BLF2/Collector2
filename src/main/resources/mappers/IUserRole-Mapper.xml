@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.blf2.dao.IUserRoleDao">
+    <resultMap id="UserRoleInfoResultMap" type="net.blf2.entity.UserRoleInfo">
+        <id property="userRoleId" column="userRoleId" />
+        <result property="userRoleName" column="userRoleName"/>
+        <result property="userRoleNote" column="userRoleNote"/>
+        <collection property="ruleInfoList" ofType="net.blf2.entity.RuleInfo" resultMap="RuleInfoResultMap" />
+    </resultMap>
+
+    <resultMap id="RuleInfoResultMap" type="net.blf2.entity.RuleInfo">
+        <id property="ruleId" column="ruleId" />
+        <result property="ruleName" column="ruleName"/>
+    </resultMap>
+
+    <sql id="RuleInfoColumns">
+        RuleInfo.ruleId,RuleInfo.ruleName
+    </sql>
+    <sql id="UserRoleInfoColumns">
+        UserRoleInfo.userRoleId,UserRoleInfo.userRoleName,UserRoleInfo.userRoleNote
+    </sql>
+    <sql id="UserRoleRuleRelationColumns">
+        UserRoleRuleRelation.relationRoleId,UserRoleRuleRelation.relationRuleId
+    </sql>
+
+    <sql id="InsertUserRoleInfoColumns">
+        userRoleId,userRoleName,userRoleNote
+    </sql>
+
+    <sql id="InsertUserRoleRuleRelationColumns">
+        relationRoleId,relationRuleId
+    </sql>
+
+    <sql id="JoinIn">
+        FROM UserRoleInfo
+        LEFT OUTER JOIN UserRoleRuleRelation ON UserRoleInfo.userRoleId = UserRoleRuleInfo.relationRoleId
+        LEFT OUTER JOIN RuleInfo ON UserRoleRuleRelation.relationRuleId = RuleInfo.ruleId
+    </sql>
+
+    <insert id="insertUserRoleInfo" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="UserRoleInfo">
+        INSERT INTO UserRoleInfo(
+        <include refid="InsertUserRoleInfoColumns"/>
+        )VALUES (
+        #{userRoleId},#{userRoleName},#{userRoleNote}
+        )
+    </insert>
+
+    <insert id="insertRuleInfosToUserRole" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="map">
+        INSERT INTO UserRoleRuleInfo
+        <foreach collection="ruleIds" index="index" item="ruleId" separator=" UNION ALL ">
+            SELECT #{userRoleId} #{ruleId}
+        </foreach>
+    </insert>
+
+    <update id="updateRuleInfo" timeout="20000" statementType="PREPARED" flushCache="true">
+        UPDATE RuleInfo
+        <set>
+            <if test="userRoleName != null">
+                userRoleName = #{userRoleName}
+            </if>
+            <if test="userRoleNote != null">
+                userRoleNote = #{userRoleNote}
+            </if>
+        </set>
+        WHERE
+        userRoleId = #{userRoleId}
+    </update>
+
+    <delete id="deleteUserRoleInfoByUserRoleId" flushCache="true" statementType="PREPARED" parameterType="String">
+        DELETE FROM UserRoleInfo WHERE userRoleId = #{userRoleId}
+    </delete>
+
+    <delete id="deleteUserRoleInfoByUserRoleIds" flushCache="true" statementType="PREPARED">
+        DELETE FROM UserRoleInfo WHERE userRoleId IN
+        <foreach collection="list" item="userRoleId" index="index" open="(" close=")" separator=",">
+            #{userRoleId}
+        </foreach>
+    </delete>
+
+
+    <select id="queryUserRoleInfoByUserRoleId" resultMap="UserRoleInfoResultMap" parameterType="String">
+        SELECT
+        <include refid="UserRoleInfoColumns" />
+        <include refid="JoinIn" />
+        WHERE UserRoleInfo.userRoleId = #{userRoleId}
+    </select>
+
+    <select id="queryUserRoleInfoAll" resultMap="UserRoleInfoResultMap">
+        SELECT
+        <include refid="UserRoleInfoColumns" />
+        <include refid="JoinIn" />
+    </select>
+
+    <select id="queryRuleInfosByUserRoleName" parameterType="String" resultMap="RuleInfoResultMap">
+        SELECT
+        <include refid="RuleInfoColumns" />
+        <include refid="JoinIn" />
+        WHERE UserRoleInfo.userRoleName = #{userRoleName}
+    </select>
+
+    <select id="queryRuleInfosByUserRoleId" parameterType="String" resultMap="RuleInfoResultMap">
+        SELECT
+        <include refid="RuleInfoColumns" />
+        <include refid="JoinIn" />
+        WHERE UserRoleInfo.userRoleId = #{userRoleId}
+    </select>
+
+    <delete id="deleteRuleInfosFromUserRole" parameterType="map" statementType="PREPARED" timeout="20000">
+        DELETE FROM UserRoleRuleInfo WHERE relationRoleId = #{userRoleId} AND ( relationRuleId IN
+        <foreach collection="ruleIds" index="index" item="ruleId" open="(" close=")" separator=",">
+            #{ruleId}
+        </foreach>
+        )
+    </delete>
+</mapper>
