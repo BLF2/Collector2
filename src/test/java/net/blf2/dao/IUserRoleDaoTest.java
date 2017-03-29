@@ -142,10 +142,6 @@ public class IUserRoleDaoTest {
         userRoleDao.deleteRuleInfosFromUserRole(delParamMap);
         List<RuleInfo> delQueryRuleInfoList = userRoleDao.queryRuleInfosByUserRoleId(userRoleInfo2.getUserRoleId());
         Assert.assertNotEquals(delQueryRuleInfoList, null);
-        for(RuleInfo ruleInfo : delQueryRuleInfoList){
-            System.out.println(ruleInfo.getRuleName());
-            logger.info(ruleInfo.getRuleName());
-        }
         Assert.assertEquals(delQueryRuleInfoList.size(), userRoleInfo2.getRuleInfoList().size());
 
         userRoleDao.deleteUserRoleInfoByUserRoleId(userRoleInfo2.getUserRoleId());
@@ -154,7 +150,20 @@ public class IUserRoleDaoTest {
 
         userRoleDao.deleteUserRoleInfoByUserRoleIds(Arrays.asList(userRoleInfo1.getUserRoleId(), userRoleInfo3.getUserRoleId()));
         List<UserRoleInfo> queryAllUserRoleInfo = userRoleDao.queryUserRoleInfoAll();
-        Assert.assertNotEquals(queryAllUserRoleInfo,null);
+        Assert.assertNotEquals(queryAllUserRoleInfo, null);
         Assert.assertEquals(queryAllUserRoleInfo.size(), 0);
+
+        ruleDao.deleteRuleInfoByRuleIds(Arrays.asList(ruleInfo1.getRuleId(), ruleInfo2.getRuleId(), ruleInfo3.getRuleId()));
+        Map<String,Object>delRoleRuleParamMap = new HashMap<>();
+        delRoleRuleParamMap.put("userRoleId", userRoleInfo1.getUserRoleId());
+        delRoleRuleParamMap.put("ruleIds", ruleIds1);
+        userRoleDao.deleteRuleInfosFromUserRole(delRoleRuleParamMap);
+        delRoleRuleParamMap.put("userRoleId",userRoleInfo2.getUserRoleId());
+        delRoleRuleParamMap.put("ruleIds",ruleIds2);
+        userRoleDao.deleteRuleInfosFromUserRole(delRoleRuleParamMap);
+        delRoleRuleParamMap.put("userRoleId",userRoleInfo3.getUserRoleId());
+        delRoleRuleParamMap.put("ruleIds",ruleIds3);
+        userRoleDao.deleteRuleInfosFromUserRole(delRoleRuleParamMap);
+
     }
 }
