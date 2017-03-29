@@ -67,4 +67,14 @@ public class UserRoleInfo {
         result = 31 * result + (getRuleInfoList() != null ? getRuleInfoList().hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "UserRoleInfo{" +
+                "userRoleId='" + userRoleId + '\'' +
+                ", userRoleName='" + userRoleName + '\'' +
+                ", userRoleNote='" + userRoleNote + '\'' +
+                ", ruleInfoList=" + ruleInfoList +
+                '}';
+    }
 }

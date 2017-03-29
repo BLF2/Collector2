@@ -42,4 +42,12 @@ public class RuleInfo {
         result = 31 * result + getRuleName().hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "RuleInfo{" +
+                "ruleId='" + ruleId + '\'' +
+                ", ruleName='" + ruleName + '\'' +
+                '}';
+    }
 }
