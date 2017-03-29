@@ -48,7 +48,7 @@
     <insert id="insertRuleInfosToUserRole" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="map">
         INSERT INTO UserRoleRuleInfo
         <foreach collection="ruleIds" index="index" item="ruleId" separator=" UNION ALL ">
-            SELECT #{userRoleId} #{ruleId}
+            SELECT #{userRoleId}, #{ruleId}
         </foreach>
     </insert>
 
