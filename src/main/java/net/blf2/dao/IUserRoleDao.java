@@ -15,7 +15,7 @@ public interface IUserRoleDao {
     boolean deleteUserRoleInfoByUserRoleIds(List<String> userRoleIds);
     UserRoleInfo queryUserRoleInfoByUserRoleId(String userRoleId);
     List<UserRoleInfo> queryUserRoleInfoAll();
-    List<RuleInfo> queryRuleInfosByUserRoleName(String userRoleName);
+ //   List<RuleInfo> queryRuleInfosByUserRoleName(String userRoleName);
     List<RuleInfo> queryRuleInfosByUserRoleId(String userRoleId);
     boolean insertRuleInfosToUserRole(Map<String,Object> paramMap);//map include userRoleId(String),ruleIds(List<String>)
     boolean deleteRuleInfosFromUserRole(Map<String,Object>paramMap);//map include userRoleId(String),ruleIds(List<String>)

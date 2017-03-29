@@ -33,7 +33,7 @@
 
     <sql id="JoinIn">
         FROM UserRoleInfo
-        LEFT OUTER JOIN UserRoleRuleRelation ON UserRoleInfo.userRoleId = UserRoleRuleInfo.relationRoleId
+        LEFT OUTER JOIN UserRoleRuleRelation ON UserRoleInfo.userRoleId = UserRoleRuleRelation.relationRoleId
         LEFT OUTER JOIN RuleInfo ON UserRoleRuleRelation.relationRuleId = RuleInfo.ruleId
     </sql>
 
@@ -46,17 +46,17 @@
     </insert>
 
     <insert id="insertRuleInfosToUserRole" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="map">
-        INSERT INTO UserRoleRuleInfo
+        INSERT INTO UserRoleRuleRelation
         <foreach collection="ruleIds" index="index" item="ruleId" separator=" UNION ALL ">
             SELECT #{userRoleId}, #{ruleId}
         </foreach>
     </insert>
 
-    <update id="updateRuleInfo" timeout="20000" statementType="PREPARED" flushCache="true">
-        UPDATE RuleInfo
+    <update id="updateUserRoleInfo" timeout="20000" statementType="PREPARED" flushCache="true">
+        UPDATE UserRoleInfo
         <set>
             <if test="userRoleName != null">
-                userRoleName = #{userRoleName}
+                userRoleName = #{userRoleName},
             </if>
             <if test="userRoleNote != null">
                 userRoleNote = #{userRoleNote}
@@ -80,24 +80,26 @@
 
     <select id="queryUserRoleInfoByUserRoleId" resultMap="UserRoleInfoResultMap" parameterType="String">
         SELECT
-        <include refid="UserRoleInfoColumns" />
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
         <include refid="JoinIn" />
         WHERE UserRoleInfo.userRoleId = #{userRoleId}
     </select>
 
     <select id="queryUserRoleInfoAll" resultMap="UserRoleInfoResultMap">
         SELECT
-        <include refid="UserRoleInfoColumns" />
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
         <include refid="JoinIn" />
     </select>
-
+<!--
     <select id="queryRuleInfosByUserRoleName" parameterType="String" resultMap="RuleInfoResultMap">
         SELECT
         <include refid="RuleInfoColumns" />
         <include refid="JoinIn" />
         WHERE UserRoleInfo.userRoleName = #{userRoleName}
     </select>
-
+-->
     <select id="queryRuleInfosByUserRoleId" parameterType="String" resultMap="RuleInfoResultMap">
         SELECT
         <include refid="RuleInfoColumns" />
@@ -106,10 +108,11 @@
     </select>
 
     <delete id="deleteRuleInfosFromUserRole" parameterType="map" statementType="PREPARED" timeout="20000">
-        DELETE FROM UserRoleRuleInfo WHERE relationRoleId = #{userRoleId} AND ( relationRuleId IN
-        <foreach collection="ruleIds" index="index" item="ruleId" open="(" close=")" separator=",">
-            #{ruleId}
-        </foreach>
-        )
+        DELETE FROM UserRoleRuleRelation
+        <where>
+            <foreach collection="ruleIds" index="index" item="ruleId" separator=" or ">
+                relationRoleId = #{userRoleId} AND relationRuleId = #{ruleId}
+            </foreach>
+        </where>
     </delete>
 </mapper>
