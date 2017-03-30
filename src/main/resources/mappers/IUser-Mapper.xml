@@ -8,7 +8,7 @@
         <result property="userPhone" column="userPhone"/>
         <result property="userMajorityClass" column="userMajorityClass" />
         <result property="userNote" column="userNote" />
-        <association property="userRoleInfo" column="userRoleId" resultMap="UserRoleInfoResultMap"
+        <association property="userRoleInfo" resultMap="UserRoleInfoResultMap"
                      javaType="net.blf2.entity.UserRoleInfo" />
     </resultMap>
     <resultMap id="UserRoleInfoResultMap" type="net.blf2.entity.UserRoleInfo">
