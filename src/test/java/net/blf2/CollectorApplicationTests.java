@@ -17,79 +17,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RunWith(SpringRunner.class)
-@MapperScan(basePackages="net.blf2.dao")
 @SpringBootTest
 public class CollectorApplicationTests {
-	@Resource
-	private IRuleDao ruleDao;
-
-	public IRuleDao getRuleDao() {
-		return ruleDao;
-	}
-
-	public void setRuleDao(IRuleDao ruleDao) {
-		this.ruleDao = ruleDao;
-	}
-
-//	@Test
-//	public void contextLoads() {
-//	}
 
 	@Test
-	public void TestRuleDao(){
-		RuleInfo ruleInfo1 = new RuleInfo();
-		ruleInfo1.setRuleId(UUID.randomUUID().toString());
-		ruleInfo1.setRuleName("testName1");
-
-		RuleInfo ruleInfo2 = new RuleInfo();
-		ruleInfo2.setRuleName("testName2");
-		ruleInfo2.setRuleId(UUID.randomUUID().toString());
-
-		RuleInfo ruleInfo3 = new RuleInfo();
-		ruleInfo3.setRuleName("testName3");
-		ruleInfo3.setRuleId(UUID.randomUUID().toString());
-
-		try{
-			ruleDao.insertRuleInfo(ruleInfo1);
-			ruleDao.insertRuleInfo(ruleInfo2);
-			ruleDao.insertRuleInfo(ruleInfo3);
-			List<RuleInfo> ruleInfoList = ruleDao.queryRuleInfoAll();
-			Assert.assertNotEquals(ruleInfoList,null);
-			int sum = 0;
-			for(RuleInfo iRuleInfo : ruleInfoList){
-				if(iRuleInfo.equals(ruleInfo1))
-					sum++;
-				else if(iRuleInfo.equals(ruleInfo2))
-					sum++;
-				else if (iRuleInfo.equals(ruleInfo3))
-					sum++;
-			}
-			Assert.assertEquals(ruleInfoList.size(), sum);
-
-			ruleInfo1.setRuleName("testChange");
-			ruleDao.updateRuleInfo(ruleInfo1);
-			RuleInfo updRuleInfo = ruleDao.queryRuleInfoByRuleId(ruleInfo1.getRuleId());
-			Assert.assertNotEquals(updRuleInfo, null);
-			Assert.assertEquals(updRuleInfo, ruleInfo1);
-
-			ruleDao.deleteRuleInfoByRuleId(ruleInfo3.getRuleId());
-			RuleInfo updRuleInfo3 = ruleDao.queryRuleInfoByRuleId(ruleInfo3.getRuleId());
-			Assert.assertEquals(updRuleInfo3,null);
-
-			List<String> ruleIds = new LinkedList<String>();
-			for (RuleInfo iRuleInfo : ruleInfoList){
-				ruleIds.add(iRuleInfo.getRuleId());
-			}
-
-			ruleDao.deleteRuleInfoByRuleIds(ruleIds);
-
-			List<RuleInfo> delRuleInfoList = ruleDao.queryRuleInfoAll();
-			Assert.assertNotEquals(delRuleInfoList,null);
-			Assert.assertEquals(delRuleInfoList.size(),0);
-		}catch (Exception ex){
-			ex.printStackTrace();
-			Assert.assertTrue(false);
-		}
-
+	public void contextLoads() {
 	}
 }

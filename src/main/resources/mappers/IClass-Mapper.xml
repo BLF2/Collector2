@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.blf2.dao.IClassDao">
+
+    <resultMap id="ClassInfoResultMap" type="net.blf2.entity.ClassInfo">
+        <id column="classId" property="classId" />
+        <result property="majorityName" column="majorityName" />
+        <result property="classGrade" column="classGrade" />
+        <result property="classNum" column="classNum" />
+        <result property="majorityClass" column="majorityClass" />
+        <result property="classNote" column="classNote"/>
+        <association property="monitorInfo" column="monitorId" resultMap="UserInfoResultMap" javaType="net.blf2.entity.UserInfo"/>
+    </resultMap>
+
+    <resultMap id="UserInfoResultMap" type="net.blf2.entity.UserInfo">
+        <id property="userNum" column="userNum"/>
+        <result property="userName" column="userName" />
+        <result property="userPswd" column="userPswd"/>
+        <result property="userPhone" column="userPhone"/>
+        <result property="userMajorityClass" column="userMajorityClass" />
+        <result property="userNote" column="userNote" />
+        <association property="userRoleInfo" column="userRoleId" resultMap="UserRoleInfoResultMap"
+                     javaType="net.blf2.entity.UserRoleInfo" />
+    </resultMap>
+
+    <resultMap id="UserRoleInfoResultMap" type="net.blf2.entity.UserRoleInfo">
+        <id property="userRoleId" column="userRoleId"/>
+        <result property="userRoleName" column="userRoleName"/>
+        <result property="userRoleNote" column="userRoleNote"/>
+        <collection property="ruleInfoList" ofType="net.blf2.entity.RuleInfo" resultMap="RuleInfoResultMap" />
+    </resultMap>
+
+    <resultMap id="RuleInfoResultMap" type="net.blf2.entity.RuleInfo">
+        <id property="ruleId" column="ruleId" />
+        <result property="ruleName" column="ruleName"/>
+    </resultMap>
+
+    <sql id="ClassInfoColumns">
+        ClassInfo.classId,ClassInfo.majorityName,ClassInfo.classGrade,ClassInfo.classNum,ClassInfo.majorityClass,
+        ClassInfo.classNote
+    </sql>
+
+    <sql id="UserInfoColumns">
+        UserInfo.userNum,UserInfo.userName,UserInfo.userPswd,UserInfo.userPhone,UserInfo.userMajorityClass,UserInfo.userNote
+    </sql>
+
+    <sql id="UserRoleInfoColumns">
+        UserRoleInfo.userRoleId,UserRoleInfo.userRoleName,UserRoleInfo.userRoleNote
+    </sql>
+
+    <sql id="RuleInfoColumns">
+       RuleInfo.ruleId,RuleInfo.ruleName
+    </sql>
+
+    <sql id="InsertClassInfoColumns">
+        classId,majorityName,classGrade,classNum,majorityClass,classNote,monitorId
+    </sql>
+
+    <sql id="JoinIn">
+        FROM UserInfo
+        LEFT OUTER JOIN UserRoleInfo ON UserInfo.userRoleId = UserRoleInfo.userRoleId
+        LEFT OUTER JOIN UserRoleRuleRelation ON UserRoleInfo.userRoleId = UserRoleRuleRelation.relationRoleId
+        LEFT OUTER JOIN RuleInfo ON UserRoleRuleRelation.relationRuleId = RuleInfo.ruleId
+    </sql>
+
+    <sql id="ClassJoinInUser">
+        FROM ClassInfo
+        LEFT OUTER JOIN UserInfo ON ClassInfo.monitorId = UserInfo.userNum
+        LEFT OUTER JOIN UserRoleInfo ON UserInfo.userRoleId = UserRoleInfo.userRoleId
+        LEFT OUTER JOIN UserRoleRuleRelation ON UserRoleInfo.userRoleId = UserRoleRuleRelation.relationRoleId
+        LEFT OUTER JOIN RuleInfo ON UserRoleRuleRelation.relationRuleId = RuleInfo.ruleId
+    </sql>
+
+    <insert id="insertClassInfo" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="net.blf2.entity.ClassInfo">
+        INSERT INTO ClassInfo(
+        <include refid="InsertClassInfoColumns"/>
+        )VALUES (
+        #{classId},#{majorityName},#{classGrade},#{classNum},#{majorityClass},#{classNote},#{monitorInfo.userNum}
+        )
+    </insert>
+
+    <update id="updateClassInfo" timeout="20000" statementType="PREPARED" flushCache="true" parameterType="net.blf2.entity.ClassInfo">
+        UPDATE ClassInfo
+        <set>
+            <if test="majorityName != null">
+                majorityName = #{majorityName},
+            </if>
+            <if test="classGrade != null">
+                classGrade = #{classGrade},
+            </if>
+            <if test="classNum != null">
+                classNum = #{classNum},
+            </if>
+            <if test="majorityClass != null">
+                majorityClass = #{majorityClass},
+            </if>
+            <if test="classNote != null">
+                classNote = #{classNote},
+            </if>
+            <if test="monitorInfo != null and monitorInfo.userNum != null">
+                monitorId = #{monitorInfo.userNum},
+            </if>
+        </set>
+        WHERE
+        classId = #{classId}
+    </update>
+
+    <delete id="deleteClassInfoByClassId" flushCache="true" statementType="PREPARED">
+        DELETE FROM ClassInfo WHERE classId = #{classId}
+    </delete>
+    <delete id="deleteClassInfoByClassIds" flushCache="true" statementType="PREPARED">
+        DELETE FROM ClassInfo WHERE classId IN
+        <foreach collection="list" item="classId" index="index" open="(" close=")" separator=",">
+            #{classId}
+        </foreach>
+    </delete>
+    <select id="queryClassInfoAll" resultMap="RuleInfoResultMap" parameterType="String">
+        SELECT
+        <include refid="ClassInfoColumns" />
+        FROM ClassInfo
+    </select>
+
+    <select id="queryClassInfoByClassId" resultMap="ClassInfoResultMap" parameterType="String">
+        SELECT
+        <include refid="ClassInfoColumns" />,
+        <include refid="UserInfoColumns" />,
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
+        <include refid="ClassJoinInUser"/>
+        WHERE classId = #{classId}
+    </select>
+    <select id="queryClassInfoByMonitorId" resultMap="ClassInfoResultMap" parameterType="String">
+        SELECT
+        <include refid="ClassInfoColumns" />
+        FROM ClassInfo
+        WHERE monitorId = #{monitorId}
+    </select>
+    <select id="queryClassIdByMonitorId" resultType="String" parameterType="String">
+        SELECT
+        ClassInfo.classId
+        FROM ClassInfo
+        WHERE monitorId = #{monitorId}
+    </select>
+    <select id="queryUserInfosByMojrityClass" resultMap="UserInfoResultMap" parameterType="String">
+        SELECT
+        <include refid="UserInfoColumns"/>,
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
+        <include refid="JoinIn" />
+        WHERE
+        UserInfo.userMajorityClass = #{majorityClass}
+    </select>
+</mapper>

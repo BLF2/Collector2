@@ -43,4 +43,38 @@ public class UserRoleInfo {
     public void setRuleInfoList(List<RuleInfo> ruleInfoList) {
         this.ruleInfoList = ruleInfoList;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserRoleInfo)) return false;
+
+        UserRoleInfo that = (UserRoleInfo) o;
+
+        if (!getUserRoleId().equals(that.getUserRoleId())) return false;
+        if (!getUserRoleName().equals(that.getUserRoleName())) return false;
+        if (getUserRoleNote() != null ? !getUserRoleNote().equals(that.getUserRoleNote()) : that.getUserRoleNote() != null)
+            return false;
+        return !(getRuleInfoList() != null ? !getRuleInfoList().equals(that.getRuleInfoList()) : that.getRuleInfoList() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getUserRoleId().hashCode();
+        result = 31 * result + getUserRoleName().hashCode();
+        result = 31 * result + (getUserRoleNote() != null ? getUserRoleNote().hashCode() : 0);
+        result = 31 * result + (getRuleInfoList() != null ? getRuleInfoList().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UserRoleInfo{" +
+                "userRoleId='" + userRoleId + '\'' +
+                ", userRoleName='" + userRoleName + '\'' +
+                ", userRoleNote='" + userRoleNote + '\'' +
+                ", ruleInfoList=" + ruleInfoList +
+                '}';
+    }
 }

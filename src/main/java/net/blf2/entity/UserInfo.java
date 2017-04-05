@@ -68,4 +68,51 @@ public class UserInfo {
     public void setUserRoleInfo(UserRoleInfo userRoleInfo) {
         this.userRoleInfo = userRoleInfo;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserInfo)) return false;
+
+        UserInfo userInfo = (UserInfo) o;
+
+        if (!getUserNum().equals(userInfo.getUserNum())) return false;
+        if (getUserName() != null ? !getUserName().equals(userInfo.getUserName()) : userInfo.getUserName() != null)
+            return false;
+        if (getUserPswd() != null ? !getUserPswd().equals(userInfo.getUserPswd()) : userInfo.getUserPswd() != null)
+            return false;
+        if (getUserPhone() != null ? !getUserPhone().equals(userInfo.getUserPhone()) : userInfo.getUserPhone() != null)
+            return false;
+        if (getUserMajorityClass() != null ? !getUserMajorityClass().equals(userInfo.getUserMajorityClass()) : userInfo.getUserMajorityClass() != null)
+            return false;
+        if (getUserNote() != null ? !getUserNote().equals(userInfo.getUserNote()) : userInfo.getUserNote() != null)
+            return false;
+        return !(getUserRoleInfo() != null ? !getUserRoleInfo().equals(userInfo.getUserRoleInfo()) : userInfo.getUserRoleInfo() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getUserNum().hashCode();
+        result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
+        result = 31 * result + (getUserPswd() != null ? getUserPswd().hashCode() : 0);
+        result = 31 * result + (getUserPhone() != null ? getUserPhone().hashCode() : 0);
+        result = 31 * result + (getUserMajorityClass() != null ? getUserMajorityClass().hashCode() : 0);
+        result = 31 * result + (getUserNote() != null ? getUserNote().hashCode() : 0);
+        result = 31 * result + (getUserRoleInfo() != null ? getUserRoleInfo().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "userNum='" + userNum + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userPswd='" + userPswd + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userMajorityClass='" + userMajorityClass + '\'' +
+                ", userNote='" + userNote + '\'' +
+                ", userRoleInfo=" + userRoleInfo +
+                '}';
+    }
 }
