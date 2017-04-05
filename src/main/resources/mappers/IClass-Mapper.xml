@@ -52,7 +52,7 @@
        RuleInfo.ruleId,RuleInfo.ruleName
     </sql>
 
-    <sql id="inserClassInfoColumns">
+    <sql id="InsertClassInfoColumns">
         classId,majorityName,classGrade,classNum,majorityClass,classNote,monitorId
     </sql>
 
@@ -63,11 +63,19 @@
         LEFT OUTER JOIN RuleInfo ON UserRoleRuleRelation.relationRuleId = RuleInfo.ruleId
     </sql>
 
-    <insert id="insertClassInfo" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="ClassInfoResultMap">
+    <sql id="ClassJoinInUser">
+        FROM ClassInfo
+        LEFT OUTER JOIN UserInfo ON ClassInfo.monitorId = UserInfo.userNum
+        LEFT OUTER JOIN UserRoleInfo ON UserInfo.userRoleId = UserRoleInfo.userRoleId
+        LEFT OUTER JOIN UserRoleRuleRelation ON UserRoleInfo.userRoleId = UserRoleRuleRelation.relationRoleId
+        LEFT OUTER JOIN RuleInfo ON UserRoleRuleRelation.relationRuleId = RuleInfo.ruleId
+    </sql>
+
+    <insert id="insertClassInfo" flushCache="true" statementType="PREPARED" timeout="20000" parameterType="net.blf2.entity.ClassInfo">
         INSERT INTO ClassInfo(
         <include refid="InsertClassInfoColumns"/>
         )VALUES (
-        #{classId},#{majorityName},#{classGrade},#{classNum},#{majorityClass},#{classNote},#{monitorInfo.userId}
+        #{classId},#{majorityName},#{classGrade},#{classNum},#{majorityClass},#{classNote},#{monitorInfo.userNum}
         )
     </insert>
 
@@ -89,8 +97,8 @@
             <if test="classNote != null">
                 classNote = #{classNote},
             </if>
-            <if test="monitorInfo != null AND monitorInfo.userId != null">
-                monitorId = #{monitorInfo.userId},
+            <if test="monitorInfo != null and monitorInfo.userNum != null">
+                monitorId = #{monitorInfo.userNum},
             </if>
         </set>
         WHERE
@@ -114,8 +122,11 @@
 
     <select id="queryClassInfoByClassId" resultMap="ClassInfoResultMap" parameterType="String">
         SELECT
-        <include refid="ClassInfoColumns" />
-        FROM ClassInfo
+        <include refid="ClassInfoColumns" />,
+        <include refid="UserInfoColumns" />,
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
+        <include refid="ClassJoinInUser"/>
         WHERE classId = #{classId}
     </select>
     <select id="queryClassInfoByMonitorId" resultMap="ClassInfoResultMap" parameterType="String">
