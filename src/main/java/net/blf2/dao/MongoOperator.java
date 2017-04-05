@@ -1,8 +1,12 @@
 package net.blf2.dao;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,9 +24,9 @@ public class MongoOperator {
         }
         return true;
     }
-    public static boolean deleteDocument(String databaseName,String collectionName,Map<String,Object>deleteDataMap){
+    public static boolean deleteDocumentById(String databaseName,String collectionName,Map<String,Object>deleteDataMap){
         MongoCollection mongoCollection = MongoDbDriver.getMongoCollectionByName(databaseName,collectionName);
-        Document  query = new Document(deleteDataMap);
+        Document query = new Document(deleteDataMap);
         try {
             mongoCollection.findOneAndDelete(query);
         }catch (Exception ex){
@@ -34,21 +38,20 @@ public class MongoOperator {
     public static boolean updateDocument(String databaseName,String collectionName,Map<String,Object>updateDataMap){
         MongoCollection mongoCollection = MongoDbDriver.getMongoCollectionByName(databaseName,collectionName);
         Document query = new Document();
-        query = MongoOperator.fillQueryConditions(updateDataMap, query);
-        Document updateDocument = Tools.mapToDocument(updateDataMap);
+        query.put("_id",updateDataMap.get("_id"));
         try {
-            mongoCollection.replaceOne(query, updateDocument);
+            mongoCollection.replaceOne(query, updateDataMap);
         }catch (Exception ex){
             ex.printStackTrace();
             return false;
         }
         return true;
     }
-    public static Document findDocument(String databaseName,String collectionName,Map<String,Object>queryDataMap){
+    public static Document findDocumentById(String databaseName,String collectionName,Map<String,Object>queryDataMap){
         MongoCollection<Document> mongoCollection = MongoDbDriver.getMongoCollectionByName(databaseName,collectionName);
         Document query = new Document();
-        query = MongoOperator.fillQueryConditions(queryDataMap, query);
-        FindIterable<Document>findIterable;
+        query.put("_id",queryDataMap.get("_id"));
+        FindIterable<Document> findIterable;
         try {
             findIterable = mongoCollection.find(query);
         }catch (Exception ex){
@@ -58,7 +61,7 @@ public class MongoOperator {
         MongoCursor<Document> cursor = findIterable.iterator();
         if(cursor == null)
             return null;
-        List<Document>documentList = new LinkedList<Document>();
+        List<Document> documentList = new LinkedList<Document>();
         while (cursor.hasNext()){
             documentList.add(cursor.next());
         }
@@ -85,8 +88,7 @@ public class MongoOperator {
     }
     public static List<Document> findAllDocumentsByFilter(String databaseName,String collectionName,Map<String,Object>queryDataMap){
         MongoCollection<Document> mongoCollection = MongoDbDriver.getMongoCollectionByName(databaseName,collectionName);
-        Document query = new Document();
-        query = Tools.mapToDocument(queryDataMap);
+        Document query = new Document(queryDataMap);
         FindIterable<Document>findIterable;
         try {
             findIterable = mongoCollection.find(query);
@@ -102,12 +104,5 @@ public class MongoOperator {
             documentList.add(cursor.next());
         }
         return documentList;
-    }
-    public static Document fillQueryConditions(Map<String,Object>dataMap,Document query){
-        if(dataMap.containsKey(Consts.MONGO_PRIMARY_KEY_NAME)){
-            query.put("_id",dataMap.get(Consts.MONGO_PRIMARY_KEY_NAME));
-            dataMap.remove(Consts.MONGO_PRIMARY_KEY_NAME);
-        }
-        return query;
     }
 }
