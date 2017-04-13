@@ -22,6 +22,13 @@ public class RuleServiceImpl implements IRuleService {
     @Resource
     private IRuleDao ruleDao;
 
+    public IRuleDao getRuleDao() {
+        return ruleDao;
+    }
+
+    public void setRuleDao(IRuleDao ruleDao) {
+        this.ruleDao = ruleDao;
+    }
 
     @Override
     public void insertRuleInfo(RuleInfo ruleInfo) {
