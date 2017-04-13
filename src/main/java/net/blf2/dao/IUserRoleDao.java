@@ -17,6 +17,18 @@ public interface IUserRoleDao {
     List<UserRoleInfo> queryUserRoleInfoAll();
  //   List<RuleInfo> queryRuleInfosByUserRoleName(String userRoleName);
     List<RuleInfo> queryRuleInfosByUserRoleId(String userRoleId);
+
+    /**
+     * key must include userRoleId and ruleIds
+     * value are String and List<String>
+     * @param paramMap
+     */
     void insertRuleInfosToUserRole(Map<String,Object> paramMap);//map include userRoleId(String),ruleIds(List<String>)
+
+    /**
+     * key must include userRoleId and ruleIds
+     * value are String and List<String>
+     * @param paramMap
+     */
     void deleteRuleInfosFromUserRole(Map<String,Object>paramMap);//map include userRoleId(String),ruleIds(List<String>)
 }
