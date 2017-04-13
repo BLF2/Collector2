@@ -10,10 +10,10 @@ import java.util.List;
  * 班级操作接口
  */
 public interface IClassDao {
-    boolean insertClassInfo(ClassInfo classInfo);
-    boolean updateClassInfo(ClassInfo classInfo);
-    boolean deleteClassInfoByClassId(String classId);
-    boolean deleteClassInfoByClassIds(List<String> classIds);
+    void insertClassInfo(ClassInfo classInfo);
+    void updateClassInfo(ClassInfo classInfo);
+    void deleteClassInfoByClassId(String classId);
+    void deleteClassInfoByClassIds(List<String> classIds);
     ClassInfo queryClassInfoByClassId(String classId);
     List<ClassInfo> queryClassInfoAll();
     ClassInfo queryClassInfoByMonitorId(String monitorId);

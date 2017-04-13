@@ -8,10 +8,10 @@ import java.util.List;
  * Created by blf2 on 17-3-27.
  */
 public interface IRuleDao {
-    boolean insertRuleInfo(RuleInfo ruleInfo);
-    boolean updateRuleInfo(RuleInfo ruleInfo);
-    boolean deleteRuleInfoByRuleId(String ruleId);
-    boolean deleteRuleInfoByRuleIds(List<String> ruleIds);
+    void insertRuleInfo(RuleInfo ruleInfo);
+    void updateRuleInfo(RuleInfo ruleInfo);
+    void deleteRuleInfoByRuleId(String ruleId);
+    void deleteRuleInfoByRuleIds(List<String> ruleIds);
     List<RuleInfo> queryRuleInfoAll();
     RuleInfo queryRuleInfoByRuleId(String ruleId);
 }

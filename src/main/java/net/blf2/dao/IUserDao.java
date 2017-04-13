@@ -10,10 +10,10 @@ import java.util.List;
  * 用户操作接口
  */
 public interface IUserDao {
-    boolean insertUserInfo(UserInfo userInfo);//增加信息
-    boolean deleteUserInfoByUserNum(String userNum);//根据学号删除信息
-    boolean deleteUserInfoByUserNums(List<String> userNums);//根据多个学号删除多条信息
-    boolean updateUserInfo(UserInfo userInfo);//更新信息
+    void insertUserInfo(UserInfo userInfo);//增加信息
+    void deleteUserInfoByUserNum(String userNum);//根据学号删除信息
+    void deleteUserInfoByUserNums(List<String> userNums);//根据多个学号删除多条信息
+    void updateUserInfo(UserInfo userInfo);//更新信息
     UserInfo queryUserInfoByUserNum(String userNum);//根据学号查询信息
     List<UserInfo> queryUserInfoAll();//查询所有信息
     UserInfo queryUserInfoByUserPhone(String userPhone);//根据手机号查询信息

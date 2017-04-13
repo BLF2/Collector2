@@ -9,14 +9,14 @@ import java.util.Map;
  * Created by blf2 on 17-3-27.
  */
 public interface IUserRoleDao {
-    boolean insertUserRoleInfo(UserRoleInfo userRoleInfo);
-    boolean updateUserRoleInfo(UserRoleInfo userRoleInfo);
-    boolean deleteUserRoleInfoByUserRoleId(String userRoleId);
-    boolean deleteUserRoleInfoByUserRoleIds(List<String> userRoleIds);
+    void insertUserRoleInfo(UserRoleInfo userRoleInfo);
+    void updateUserRoleInfo(UserRoleInfo userRoleInfo);
+    void deleteUserRoleInfoByUserRoleId(String userRoleId);
+    void deleteUserRoleInfoByUserRoleIds(List<String> userRoleIds);
     UserRoleInfo queryUserRoleInfoByUserRoleId(String userRoleId);
     List<UserRoleInfo> queryUserRoleInfoAll();
  //   List<RuleInfo> queryRuleInfosByUserRoleName(String userRoleName);
     List<RuleInfo> queryRuleInfosByUserRoleId(String userRoleId);
-    boolean insertRuleInfosToUserRole(Map<String,Object> paramMap);//map include userRoleId(String),ruleIds(List<String>)
-    boolean deleteRuleInfosFromUserRole(Map<String,Object>paramMap);//map include userRoleId(String),ruleIds(List<String>)
+    void insertRuleInfosToUserRole(Map<String,Object> paramMap);//map include userRoleId(String),ruleIds(List<String>)
+    void deleteRuleInfosFromUserRole(Map<String,Object>paramMap);//map include userRoleId(String),ruleIds(List<String>)
 }
