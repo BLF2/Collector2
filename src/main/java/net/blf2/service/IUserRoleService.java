@@ -18,6 +18,17 @@ public interface IUserRoleService {
     UserRoleInfo queryUserRoleInfoByUserRoleId(String userRoleId);
     List<UserRoleInfo> querUserRoleInfoAll();
     List<RuleInfo> queryRuleInfosByUserRoleId(String userRoleId);
+
+    /**
+     * key must include userRoleId and ruleIds
+     * value are String and List<String>
+     * @param paramMap
+     */
     void insertRuleInfosToUserRole(Map<String,Object> paramMap);//map include userRoleId(String),ruleIds(List<String>)
+    /**
+     * key must include userRoleId and ruleIds
+     * value are String and List<String>
+     * @param paramMap
+     */
     void deleteRuleInfosFromUserRole(Map<String,Object>paramMap);//map include userRoleId(String),ruleIds(List<String>)
 }
