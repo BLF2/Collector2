@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class UserRoleServiceImpl implements IUserRoleService {
     }
 
     @Override
-    public void updateUserRoleInfoBy(UserRoleInfo userRoleInfo) {
+    public void updateUserRoleInfo(UserRoleInfo userRoleInfo) {
         try {
             userRoleDao.updateUserRoleInfo(userRoleInfo);
         }catch (Exception ex){
@@ -63,6 +64,7 @@ public class UserRoleServiceImpl implements IUserRoleService {
             throw new UpdateException(this);
         }
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -82,13 +84,11 @@ public class UserRoleServiceImpl implements IUserRoleService {
         return userRoleDao.queryRuleInfosByUserRoleId(userRoleId);
     }
 
-    /**
-     * key must include userRoleId and ruleIds
-     * value are String and List<String>
-     * @param paramMap
-     */
     @Override
-    public void insertRuleInfosToUserRole(Map<String, Object> paramMap) {
+    public void insertRuleInfosToUserRole(String userRoleId, List<String> ruleIds) {
+        Map<String,Object>paramMap = new HashMap<>();
+        paramMap.put("userRoleId",userRoleId);
+        paramMap.put("ruleIds",ruleIds);
         try {
             userRoleDao.insertRuleInfosToUserRole(paramMap);
         }catch (Exception ex){
@@ -97,13 +97,11 @@ public class UserRoleServiceImpl implements IUserRoleService {
         }
     }
 
-    /**
-     * key must include userRoleId and ruleIds
-     * value are String and List<String>
-     * @param paramMap
-     */
     @Override
-    public void deleteRuleInfosFromUserRole(Map<String, Object> paramMap) {
+    public void deleteRuleInfosFromUserRole(String userRoleId, List<String> ruleIds) {
+        Map<String,Object>paramMap = new HashMap<>();
+        paramMap.put("userRoleId",userRoleId);
+        paramMap.put("ruleIds",ruleIds);
         try {
             userRoleDao.deleteRuleInfosFromUserRole(paramMap);
         }catch (Exception ex){
@@ -111,4 +109,5 @@ public class UserRoleServiceImpl implements IUserRoleService {
             throw new DeleteException(this);
         }
     }
+
 }
