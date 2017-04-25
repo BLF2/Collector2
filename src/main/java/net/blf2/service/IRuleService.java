@@ -1,17 +1,18 @@
-package net.blf2.dao;
+package net.blf2.service;
 
 import net.blf2.entity.RuleInfo;
 
 import java.util.List;
 
 /**
- * Created by blf2 on 17-3-27.
+ * Created by blf2 on 17-4-13.
+ * 权限service
  */
-public interface IRuleDao {
+public interface IRuleService {
     void insertRuleInfo(RuleInfo ruleInfo);
-    void updateRuleInfo(RuleInfo ruleInfo);
     void deleteRuleInfoByRuleId(String ruleId);
     void deleteRuleInfoByRuleIds(List<String> ruleIds);
-    List<RuleInfo> queryRuleInfoAll();
+    void updateRuleInfo(RuleInfo ruleInfo);
     RuleInfo queryRuleInfoByRuleId(String ruleId);
+    List<RuleInfo> queryRuleInfoAll();
 }
