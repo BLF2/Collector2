@@ -34,4 +34,5 @@ public class Consts {
     public static final String MONGO_DATABASE_NAME = "app";
     public static final String COLLECTION_FOR_FORM = "FormInfo";
     public static final String DIY_FORM_INFO = "DIYFormInfo";//自定义表单名称，用于存入mongo的key
+    public static final String FORM_RESULT_COLLECTION_NAME = "FormResult";//表单收集的数据
 }
