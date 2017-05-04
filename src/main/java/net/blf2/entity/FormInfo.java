@@ -7,6 +7,7 @@ import java.util.List;
  * 表单综合信息
  */
 public class FormInfo {
+    private String formId;//表单id
     private List<ItermInfo> itermInfoList;//项目列表
     private String introductionString;//介绍
     private boolean noteString;//备注框
@@ -15,6 +16,14 @@ public class FormInfo {
 
     public List<ItermInfo> getItermInfoList() {
         return itermInfoList;
+    }
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
     }
 
     public void setItermInfoList(List<ItermInfo> itermInfoList) {
