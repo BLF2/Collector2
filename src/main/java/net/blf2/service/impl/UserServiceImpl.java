@@ -2,6 +2,7 @@ package net.blf2.service.impl;
 
 import net.blf2.dao.IUserDao;
 import net.blf2.entity.UserInfo;
+import net.blf2.exception.DeleteException;
 import net.blf2.exception.InsertException;
 import net.blf2.exception.UpdateException;
 import net.blf2.service.IUserService;
@@ -34,12 +35,22 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public void deleteUserInfoByUserNum(String userNum) {
-        //TODO:删除用户信息
+        try {
+            userDao.deleteUserInfoByUserNum(userNum);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw new DeleteException(this);
+        }
     }
 
     @Override
     public void deleteUserInfoByUserNums(List<String> userNums) {
-        //TODO:删除多个用户信息
+        try {
+            userDao.deleteUserInfoByUserNums(userNums);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw new DeleteException(this);
+        }
     }
 
     @Override
