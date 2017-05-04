@@ -32,4 +32,7 @@ public class Consts {
     public static final int SOCKET_TIME_OUT = props == null ? 5000 : Integer.parseInt(props.getProperty("SOCKET_TIME_OUT","5000"));
     public static final boolean SOCKET_KEEP_ALIVE = props == null ? false : Boolean.parseBoolean(props.getProperty("SOCKET_KEEP_ALIVE","false"));
     public static final String MONGO_DATABASE_NAME = "app";
+    public static final String COLLECTION_FOR_FORM = "FormInfo";
+    public static final String DIY_FORM_INFO = "DIYFormInfo";//自定义表单名称，用于存入mongo的key
+    public static final String FORM_RESULT_COLLECTION_NAME = "FormResult";//表单收集的数据
 }

@@ -1,4 +1,4 @@
-package net.blf2.dao;
+package net.blf2.service;
 
 import net.blf2.entity.ClassInfo;
 import net.blf2.entity.UserInfo;
@@ -6,10 +6,10 @@ import net.blf2.entity.UserInfo;
 import java.util.List;
 
 /**
- * Created by blf2 on 17-3-30.
- * 班级操作接口
+ * Created by blf2 on 17-4-28.
+ * 班级操作
  */
-public interface IClassDao {
+public interface IClassService {
     void insertClassInfo(ClassInfo classInfo);//插入班级信息
     void updateClassInfo(ClassInfo classInfo);//更新班级信息
     void deleteClassInfoByClassId(String classId);//根据Id删除班级信息
