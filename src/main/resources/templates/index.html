@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+     <!--上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！-->
+    <title>Index</title>
+     <!--Bootstrap core CSS-->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
+
+    <link th:href="@{/css/navbar-static-top.css}" rel="stylesheet" />
+
+    <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
 </head>
 <body>
-$END$
+<div th:include="framework::MyNav('active','','')"></div>
 </body>
 </html>
