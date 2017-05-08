@@ -70,14 +70,14 @@
                 <!-- start form-->
                 <form action="/login" method="post">
                     <div class="form-group">
-                        <label for="loginId">Email address</label>
-                        <input type="text" class="form-control" id="loginId" name="loginId" placeholder="学号" maxlength="11"/>
-                        <p id="wariningLoginId"></p>
+                        <label for="loginId">登录名</label>
+                        <input type="text" class="form-control" id="loginId" name="loginId" placeholder="学号" maxlength="11" onblur="checkLoginId()"/>
+                        <p id="wariningLoginId" style="display: none;color: red;">请输入用户名</p>
                     </div>
                     <div class="form-group">
-                        <label for="loginPswd">Password</label>
-                        <input type="password" class="form-control" id="loginPswd" name="loginPswd" placeholder="密码" maxlength="16"/>
-                        <p id="wariningLoginPswd"></p>
+                        <label for="loginPswd">密码</label>
+                        <input type="password" class="form-control" id="loginPswd" name="loginPswd" placeholder="密码" maxlength="16" onblur="checkLoginPswd()"/>
+                        <p id="warningLoginPswd" style="display: none;color:red;">请输入密码</p>
                     </div>
 
                     <div class="checkbox">
@@ -87,7 +87,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
-                        <button type="button" class="btn btn-primary" onclick="return checkForm()">提交</button>
+                        <button type="submit" class="btn btn-primary" onclick="return checkForm()">提交</button>
                     </div>
                 </form>
                 <!-- end form-->
@@ -101,23 +101,47 @@
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script th:src="@{/js/ie10-viewport-bug-workaround.js}"></script>
-<!--<script type="text/javascript">-->
-    <!--function checkForm() {-->
-        <!--var loginId = document.getElementById('loginId').value;-->
-        <!--var loginPswd = document.getElementById('loginPswd').value;-->
-        <!--if(loginId == ''){-->
-            <!--var wariningLoginId = document.getElementById('wariningLoginId');-->
-            <!--wariningLoginId.innerHTML = '<p id="wariningLoginId" style="color: red">请输入学号！</p>';-->
-            <!--return false;-->
-        <!--}-->
-        <!--if(loginPswd == ''){-->
-            <!--var wariningLoginPswd = document.getElementById('wariningLoginPswd');-->
-            <!--wariningLoginId.innerHTML = '<p id="wariningLoginPswd" style="color=red">请输入密码！</p>';-->
-            <!--return false;-->
-        <!--}-->
-        <!--return true;-->
+<script type="text/javascript">
+    function checkLoginId() {
+        var loginId = document.getElementById('loginId');
+        var warningLoginId = document.getElementById('wariningLoginId');
+        if(loginId.value == ''){
+           warningLoginId.style.display='inline';
+            return false;
+        }else{
+            warningLoginId.style.display='none';
+            return true;
+        }
+        return false;
+    }
+    function checkLoginPswd() {
+        var loginPswd = document.getElementById('loginPswd');
+        var warningLoginPswd = document.getElementById('warningLoginPswd');
+        if(loginPswd.value == ''){
+            warningLoginPswd.style.display = 'inline';
+            return false;
+        }else{
+            warningLoginPswd.style.display = 'none';
+            return true;
+        }
+        return false;
+    }
+    function checkForm() {
+        var loginId = document.getElementById('loginId').value;
+        var loginPswd = document.getElementById('loginPswd').value;
+        var warningLoginId = document.getElementById('warningLoginId');
+        var warningLoginPswd = document.getElementById('warningLoginPswd');
 
-    <!--}-->
-<!--</script>-->
+        if(loginId == '') {
+            warningLoginId.style.display = 'inline';
+            return false;
+        }else if(loginPswd == ''){
+            warningLoginPswd.style.display = 'none';
+            return false;
+        }
+        return true;
+    }
+
+</script>
 </body>
 </html>
