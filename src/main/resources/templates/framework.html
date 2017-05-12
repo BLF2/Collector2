@@ -24,6 +24,10 @@
                     <li th:class="${aboutq}"><a href="#about">About</a></li>
                     <li th:class="${contactq}"><a href="#contact">Contact</a></li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li th:text="${CurrentUser} != null ? |您好，${CurrentUser.name}| : 未登录 "></li>
+                    <li th:if="${CurrentUser} != null"><a th:href="@{/User/logOut}">注销</a></li>
+                </ul>
             </div><!--/.nav-collapse -->
         </div>
     </nav>
