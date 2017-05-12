@@ -1,14 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-     <!--上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！-->
-    <title>Index</title>
-     <!--Bootstrap core CSS-->
-    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
 
+    <div th:replace="framework::BootStrapFile"></div>
+
+    <title>Index</title>
     <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
 
     <link th:href="@{/css/navbar-static-top.css}" rel="stylesheet" />
@@ -17,6 +13,7 @@
 
     <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
 </head>
 <body>
 <div th:include="framework::MyNav('active','','')"></div>
@@ -26,7 +23,7 @@
         <p>每年我们都会遇到教师收集各种各样的学生信息，比如综合测评，比如优秀班干部，奖学金评选等，这些信息都会是班长或者老师头疼的
         对象。班长头疼综合测评学生的各种修改和重新计算，老师头疼和学生约定填写时间和当面告诉填写要求。能不能做这么一个平台来
         解决这个问题？Collector2就是为这种问题提出的一种解决方案，本版本为第二版。</p>
-        <p><a class="btn btn-primary btn-lg" href="#"  th:href="@{/User/ToSubmitInfo}" role="button">注册 &raquo;</a></p>
+        <p><a class="btn btn-primary btn-lg" href="#"  th:href="@{/User/toRegister}" role="button">注册 &raquo;</a></p>
     </div>
 </div>
 
@@ -96,9 +93,6 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script th:src="@{/js/ie10-viewport-bug-workaround.js}"></script>
 <script type="text/javascript">
@@ -141,6 +135,7 @@
         }
         return true;
     }
+
 
 </script>
 </body>
