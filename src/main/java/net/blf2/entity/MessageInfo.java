@@ -68,4 +68,32 @@ public class MessageInfo {
     public void setCurrentStatus(Integer currentStatus) {
         this.currentStatus = currentStatus;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MessageInfo that = (MessageInfo) o;
+
+        if (!messageId.equals(that.messageId)) return false;
+        if (!senderId.equals(that.senderId)) return false;
+        if (!recieverId.equals(that.recieverId)) return false;
+        if (sendDateTime != null ? !sendDateTime.equals(that.sendDateTime) : that.sendDateTime != null) return false;
+        if (startTime != null ? !startTime.equals(that.startTime) : that.startTime != null) return false;
+        if (endTime != null ? !endTime.equals(that.endTime) : that.endTime != null) return false;
+        return currentStatus != null ? currentStatus.equals(that.currentStatus) : that.currentStatus == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = messageId.hashCode();
+        result = 31 * result + senderId.hashCode();
+        result = 31 * result + recieverId.hashCode();
+        result = 31 * result + (sendDateTime != null ? sendDateTime.hashCode() : 0);
+        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
+        result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
+        result = 31 * result + (currentStatus != null ? currentStatus.hashCode() : 0);
+        return result;
+    }
 }

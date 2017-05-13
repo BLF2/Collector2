@@ -19,21 +19,17 @@
     </sql>
 
     <insert id="insertMessageInfo" flushCache="true" timeout="20000" parameterType="net.blf2.entity.MessageInfo">
-        INSERT INTO MessageInfo(
-        <include refid="InsertMessageColumns" />
-        ) VALUES (
+        INSERT INTO MessageInfo VALUES (
         #{messageId},#{recieverId},#{senderId},#{sendDateTime},#{startTime},#{endTime},
         #{currentStatus}
         )
     </insert>
 
-    <insert id="insertMessageInfos" flushCache="true" timeout="20000" parameterType="list">
-        INSERT INTO MessageInfo(
-        <include refid="InsertMessageColumns" />
-        ) VALUES
-        <foreach collection="list" index="index" item="message" open="(" close=")" separator=" UNION ALL ">
-            SELECT #{messageId},#{recieverId},#{senderId},#{sendDateTime},#{startTime},#{endTime},
-            #{currentStatus}
+    <insert id="insertMessageInfos" flushCache="true" timeout="20000" parameterType="list" statementType="PREPARED">
+        INSERT INTO MessageInfo
+        <foreach collection="list" index="index" item="message"  separator=" UNION ALL ">
+            SELECT #{message.messageId},#{message.recieverId},#{message.senderId},#{message.sendDateTime},
+            #{message.startTime},#{message.endTime},#{message.currentStatus}
         </foreach>
     </insert>
 
@@ -41,19 +37,19 @@
         UPDATE MessageInfo
         <set>
             <if test="recieverId != null">
-                recieverId = #{recieverId}
+                recieverId = #{recieverId},
             </if>
             <if test="senderId != null">
-                senderId = #{senderId}
+                senderId = #{senderId},
             </if>
             <if test="sendDateTime">
-                sendDateTime= #{sendDateTime}
+                sendDateTime= #{sendDateTime},
             </if>
             <if test="startTime">
-                startTime = #{startTime}
+                startTime = #{startTime},
             </if>
             <if test="endTime">
-                endTime = #{endTime}
+                endTime = #{endTime},
             </if>
             <if test="currentStatus != null">
                 currentStatus = #{currentStatus}
