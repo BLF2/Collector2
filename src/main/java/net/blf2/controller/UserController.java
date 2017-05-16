@@ -5,6 +5,7 @@ import net.blf2.entity.UserInfo;
 import net.blf2.service.IClassService;
 import net.blf2.service.IUserService;
 import net.blf2.util.Consts;
+import net.blf2.util.LoginUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,9 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by blf2 on 17-5-12.
@@ -47,8 +47,14 @@ public class UserController {
             model.addObject(Consts.ERROR_MESSAGE_FOR_PAGE,"操作不合法,3秒后跳转到主页...");
             return model;
         }
-        httpSession.removeAttribute(Consts.CURRENT_USER);
+        LoginUtil.logOut(httpSession);
         model.setViewName("index");
         return model;
+    }
+    @RequestMapping("/toCreateClass")
+    public ModelAndView toCreateClass(ModelAndView model,HttpSession httpSession){
+        List<String> yearList = new LinkedList<>();
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        return  model;
     }
 }
