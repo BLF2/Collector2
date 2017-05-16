@@ -13,6 +13,24 @@ public class FormInfo {
     private boolean noteString;//备注框
     private String startDateTime;//开始时间
     private String endDateTime;//结束时间
+    private String createDateTime;//创建时间
+    private String createNum;//创建者Id
+
+    public String getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(String createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public String getCreateNum() {
+        return createNum;
+    }
+
+    public void setCreateNum(String createNum) {
+        this.createNum = createNum;
+    }
 
     public List<ItermInfo> getItermInfoList() {
         return itermInfoList;
