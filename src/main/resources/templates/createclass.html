@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <div th:replace="framework::BootStrapFile"></div>
+    <title>创建班级</title>
 </head>
 <body>
-$END$
+<div th:include="framework::RoleNav('active','')"></div>
+<form>
+    <div class="form-group">
+        <label for="majorityName">专业名称</label>
+        <input type="text" class="form-control" id="majorityName" name='majorityName' placeholder="专业名称，如软件工程" />
+    </div>
+    <div class="form-group">
+        <label for="classGrade">年级</label>
+        <input type="text" class="form-control" id="classGrade" name="classGrade" placeholder="年级，如2013" />
+    </div>
+    <div class="form-group">
+        <label for="classNum">班级</label>
+        <input type="text" class="form-control" id="classNum" name="classNum" placeholder="班级，如03" />
+    </div>
+    <button type="submit" class="btn btn-default">提交</button>
+</form>
 </body>
 </html>

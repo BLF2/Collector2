@@ -6,6 +6,7 @@
     <title>Title</title>
 </head>
 <body>
+<!-- 主页导航 -->
 <div th:fragment="MyNav(homeq,aboutq,contactq)">
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
@@ -18,7 +19,7 @@
                 </button>
                 <a class="navbar-brand" href="#">Project name</a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li th:class="${homeq}"><a href="#">Home</a></li>
                     <li th:class="${aboutq}"><a href="#about">About</a></li>
@@ -32,6 +33,34 @@
         </div>
     </nav>
 </div>
+
+<!-- 角色导航栏-->
+<div th:fragment="RoleNav(MyFunc,MyMessage)">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Project name</a>
+            </div>
+            <div  class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li th:class="${MyFunc}"><a href="#">我的功能</a></li>
+                    <li th:class="${MyMessage}"><a href="#about">我的消息</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li th:text="${CurrentUser} != null ? |您好，${CurrentUser.name}| : 未登录 "></li>
+                    <li th:if="${CurrentUser} != null"><a th:href="@{/User/logOut}">注销</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+</div>
+
 <div th:fragment="MyFooter">
     <hr />
     <footer>
