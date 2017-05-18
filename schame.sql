@@ -22,7 +22,13 @@ CREATE TABLE ClassInfo(classId VARCHAR(100) PRIMARY KEY,majorityName VARCHAR(50)
                       classNum VARCHAR(10) NOT NULL,majorityClass VARCHAR(80) NOT NULL,monitorId VARCHAR(100) NOT  NULL,
                       classNote VARCHAR(512));
 
+DROP TABLE IF EXISTS MessageInfo;
+CREATE TABLE MessageInfo(messageId VARCHAR(100) PRIMARY KEY,recieverId VARCHAR(100) NOT NULL,
+senderId varchar(100) NOT NULL,sendDateTime varchar(20),startTime VARCHAR(20),endTime
+VARCHAR(20),currentStatus int(2));
 
 ALTER TABLE UserRoleRuleRelation ADD CONSTRAINT relationRoleFK FOREIGN KEY (relationRoleId) REFERENCES UserRoleInfo(userRoleId) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE UserRoleRuleRelation ADD CONSTRAINT relationRuleFK FOREIGN KEY (relationRuleId) REFERENCES RuleInfo(ruleId) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE UserInfo ADD CONSTRAINT userInfoRoleFK FOREIGN KEY (userRoleId) REFERENCES UserRoleInfo(userRoleId) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE MessageInfo ADD CONSTRAINT messageUserFK1 FOREIGN KEY (senderId) REFERENCES UserInfo(userNum) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE MessageInfo ADD CONSTRAINT messageUserFk2 FOREIGN KEY (recieverId) REFERENCES UserInfo(userNum) ON UPDATE CASCADE ON DELETE CASCADE;

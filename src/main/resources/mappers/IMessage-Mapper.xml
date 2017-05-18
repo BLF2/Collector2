@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.blf2.dao.IMessageDao">
+    <resultMap id="MessageResultMap" type="net.blf2.entity.MessageInfo">
+        <id property="messageId" column="messageId"/>
+        <result property="recieverId" column="recieverId" />
+        <result property="senderId" column="senderId"/>
+        <result property="sendDateTime" column="sendDateTime"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="currentStatus" column="currentStatus" />
+    </resultMap>
+    <sql id="MessageInfoColumns">
+        MessageInfo.messageId,MessageInfo.recieverId,MessageInfo.senderId,MessageInfo.sendDateTime,
+        MessageInfo.startTime,MessageInfo.endTime,MessageInfo.currentStatus
+    </sql>
+    <sql id="InsertMessageColumns">
+         messageId,recieverId,senderId,sendDateTime,startTime,endTime,currentStatus
+    </sql>
+
+    <insert id="insertMessageInfo" flushCache="true" timeout="20000" parameterType="net.blf2.entity.MessageInfo">
+        INSERT INTO MessageInfo VALUES (
+        #{messageId},#{recieverId},#{senderId},#{sendDateTime},#{startTime},#{endTime},
+        #{currentStatus}
+        )
+    </insert>
+
+    <insert id="insertMessageInfos" flushCache="true" timeout="20000" parameterType="list" statementType="PREPARED">
+        INSERT INTO MessageInfo
+        <foreach collection="list" index="index" item="message"  separator=" UNION ALL ">
+            SELECT #{message.messageId},#{message.recieverId},#{message.senderId},#{message.sendDateTime},
+            #{message.startTime},#{message.endTime},#{message.currentStatus}
+        </foreach>
+    </insert>
+
+    <update id="updateMessageInfo" flushCache="true" parameterType="net.blf2.entity.MessageInfo">
+        UPDATE MessageInfo
+        <set>
+            <if test="recieverId != null">
+                recieverId = #{recieverId},
+            </if>
+            <if test="senderId != null">
+                senderId = #{senderId},
+            </if>
+            <if test="sendDateTime">
+                sendDateTime= #{sendDateTime},
+            </if>
+            <if test="startTime">
+                startTime = #{startTime},
+            </if>
+            <if test="endTime">
+                endTime = #{endTime},
+            </if>
+            <if test="currentStatus != null">
+                currentStatus = #{currentStatus}
+            </if>
+        </set>
+        WHERE
+        messageId = #{messageId}
+    </update>
+    <delete id="deleteMessageInfoByMessageId" parameterType="String">
+        DELETE FROM MessageInfo WHERE messageId = #{messageId}
+    </delete>
+    <delete id="deleteMessageInfosByMessageIds" parameterType="list">
+        DELETE FROM MessageInfo WHERE messageId IN
+        <foreach collection="list" item="messageId" index="index" open="(" close=")" separator=",">
+            #{messageId}
+        </foreach>
+    </delete>
+    <select id="queryMessageInfoByMessageId" parameterType="String"
+            flushCache="true" resultMap="MessageResultMap">
+        SELECT
+        <include refid="MessageInfoColumns" />
+        FROM MessageInfo
+        WHERE messageId = #{messageId}
+    </select>
+    <select id="queryMessageInfoAll" resultMap="MessageResultMap">
+        SELECT
+        <include refid="MessageInfoColumns"/>
+        FROM MessageInfo
+    </select>
+    <select id="queryMessageInfosByRecieverId" resultMap="MessageResultMap" parameterType="String">
+        SELECT
+        <include refid="MessageInfoColumns"/>
+        FROM MessageInfo
+        WHERE recieverId = #{recieverId}
+    </select>
+    <select id="queryMessageInfosBySenderId" resultMap="MessageResultMap" parameterType="String">
+        SELECT
+        <include refid="MessageInfoColumns"/>
+        FROM MessageInfo
+        WHERE senderId = #{senderId}
+    </select>
+</mapper>

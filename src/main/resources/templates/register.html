@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="framework::BootStrapFile"></div>
+    <title>注册</title>
+</head>
+<body>
+<div th:include="framework::MyNav('active','','')"></div>
+<div class="alert alert-danger" role="alert" th:text="${loginError}" th:style="${loginError} != null ? 'display:block' : 'display:none'"></div>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form method="post" action="#">
+            <div class="form-group">
+                <label for="userNum">学号</label>
+                <input type="text" class="form-control" id="userNum" name="userNum" placeholder="学号，最长11位" maxlength="11" />
+            </div>
+            <div class="form-group">
+                <label for="userPswd">密码</label>
+                <input type="password" class="form-control" id="userPswd" name="userPswd" placeholder="密码，最长16位" maxlength="16"/>
+            </div>
+            <div class="form-group">
+                <label for="userName">姓名</label>
+                <input type="text" class="form-control" id="userName"  name="userName" placeholder="姓名" />
+            </div>
+            <div class="form-group">
+                <label for="userPhone">姓名</label>
+                <input type="text" class="form-control" id="userPhone"  name="userPhone" placeholder="手机号" />
+            </div>
+            <div class="form-group">
+                <label>身份：</label>
+                <label><input type="radio" id="indentity1" name="identity" value="primary" onclick="changeIdentity()" />学生</label>
+                <label><input type="radio" id="indentity2" name="identity" value="monitor" onclick="changeIdentity()"/>班长/教师</label>
+            </div>
+            <div class="form-group" style="display: block" id="majorityClassDiv">
+                <label for="majorityClass">专业班级</label>
+                <select name="majorityClass" id="majorityClass">
+                    <option value="0">请选择专业班级</option>
+                    <option th:each="majorityClassMap: ${MajorityClassMap}" th:value="${majorityClassMap.key}" th:text="${majorityClassMap.value}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">提交</button>
+        </form>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+<script type="text/javascript">
+    function changeIdentity() {
+        var identity1 = document.getElementById("indentity1");
+        var identity2 = document.getElementById("indentity2");
+        if(identity1.checked){
+            var majorClass = document.getElementById("majorityClassDiv");
+            majorClass.style.display='block';
+        }else if(identity2.checked){
+            var majorClass = document.getElementById("majorityClassDiv");
+            majorClass.style.display='none';
+        }
+    }
+</script>
+</body>
+</html>

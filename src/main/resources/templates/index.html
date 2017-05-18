@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <div th:replace="framework::BootStrapFile"></div>
+
+    <title>Index</title>
+    <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
+
+    <link th:href="@{/css/navbar-static-top.css}" rel="stylesheet" />
+
+    <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+</head>
+<body>
+<div th:include="framework::MyNav('active','','')"></div>
+<div class="alert alert-danger" role="alert" th:text="${loginError}" th:style="${loginError} != null ? 'display:block' : 'display:none'"></div>
+<div class="jumbotron">
+    <div class="container">
+        <h1>Collector2</h1>
+        <p>每年我们都会遇到教师收集各种各样的学生信息，比如综合测评，比如优秀班干部，奖学金评选等，这些信息都会是班长或者老师头疼的
+        对象。班长头疼综合测评学生的各种修改和重新计算，老师头疼和学生约定填写时间和当面告诉填写要求。能不能做这么一个平台来
+        解决这个问题？Collector2就是为这种问题提出的一种解决方案，本版本为第二版。</p>
+        <p><a class="btn btn-primary btn-lg" href="#"  th:href="@{/User/toRegister}" role="button">注册 &raquo;</a></p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>学生</h2>
+            <p>如果您是学生，并且收到了教师或者班长的信息，需要你去填写一些信息，请点击下面的按钮进入填写界面。 </p>
+            <p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                登录 &raquo;
+            </button></p>
+        </div>
+        <div class="col-md-4">
+            <h2>班长或教师</h2>
+            <p>如果您是班长或者教师，请先登录，然后创建班级，然后开始使用本系统。 </p>
+            <p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                登录 &raquo;
+            </button></p>
+        </div>
+        <div class="col-md-4">
+            <h2>管理员</h2>
+            <p>如果您是管理员，请登录后管理和维护系统。</p>
+            <br />
+            <p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                登录 &raquo;
+            </button></p>
+        </div>
+    </div>
+
+    <div th:include="framework::MyFooter"></div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">登录</h4>
+            </div>
+            <div class="modal-body">
+                <!-- start form-->
+                <form action="/User/login" method="post">
+                    <div class="form-group">
+                        <label for="loginId">登录名</label>
+                        <input type="text" class="form-control" id="loginId" name="loginId" placeholder="学号" maxlength="11" onblur="checkLoginId()"/>
+                        <p id="wariningLoginId" style="display: none;color: red;">请输入用户名</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPswd">密码</label>
+                        <input type="password" class="form-control" id="loginPswd" name="loginPswd" placeholder="密码" maxlength="16" onblur="checkLoginPswd()"/>
+                        <p id="warningLoginPswd" style="display: none;color:red;">请输入密码</p>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" /> 记住我
+                        </label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                        <button type="submit" class="btn btn-primary" onclick="return checkForm()">提交</button>
+                    </div>
+                </form>
+                <!-- end form-->
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script th:src="@{/js/ie10-viewport-bug-workaround.js}"></script>
+<script type="text/javascript">
+    function checkLoginId() {
+        var loginId = document.getElementById('loginId');
+        var warningLoginId = document.getElementById('wariningLoginId');
+        if(loginId.value == ''){
+           warningLoginId.style.display='inline';
+            return false;
+        }else{
+            warningLoginId.style.display='none';
+            return true;
+        }
+        return false;
+    }
+    function checkLoginPswd() {
+        var loginPswd = document.getElementById('loginPswd');
+        var warningLoginPswd = document.getElementById('warningLoginPswd');
+        if(loginPswd.value == ''){
+            warningLoginPswd.style.display = 'inline';
+            return false;
+        }else{
+            warningLoginPswd.style.display = 'none';
+            return true;
+        }
+        return false;
+    }
+    function checkForm() {
+        var loginId = document.getElementById('loginId').value;
+        var loginPswd = document.getElementById('loginPswd').value;
+        var warningLoginId = document.getElementById('warningLoginId');
+        var warningLoginPswd = document.getElementById('warningLoginPswd');
+
+        if(loginId == '') {
+            warningLoginId.style.display = 'inline';
+            return false;
+        }else if(loginPswd == ''){
+            warningLoginPswd.style.display = 'none';
+            return false;
+        }
+        return true;
+    }
+
+
+</script>
+</body>
+</html>

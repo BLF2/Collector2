@@ -1,0 +1,14 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <div th:replace="framework::BootStrapFile"></div>
+    <title>班长管理界面</title>
+</head>
+<body>
+<div th:include="framework::RoleNav('active','')"></div>
+<a href="/User/toCreateClass"><button type="button" class="btn btn-primary">创建班级</button></a>
+<button type="button" class="btn btn-primary">查看本班所有同学</button>
+<button type="button" class="btn btn-primary">查看我发布的信息提交</button>
+</body>
+</html>
