@@ -1,7 +1,8 @@
 package net.blf2.util;
 
 import net.blf2.entity.UserInfo;
-
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -9,14 +10,17 @@ import javax.servlet.http.HttpSession;
  * 登录信息工具类
  */
 public class LoginUtil {
-    public static UserInfo getCurrentUser(HttpSession httpSession){
+    public static UserInfo getCurrentUser(){
+        HttpSession httpSession = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
         UserInfo loginInfo = (UserInfo) httpSession.getAttribute(Consts.CURRENT_USER);
         return loginInfo;
     }
-    public static void logOut(HttpSession httpSession){
+    public static void logOut(){
+        HttpSession httpSession = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
         httpSession.removeAttribute(Consts.CURRENT_USER);
     }
-    public static void logIn(HttpSession httpSession,UserInfo userInfo){
+    public static void logIn(UserInfo userInfo){
+        HttpSession httpSession = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
         httpSession.setAttribute(Consts.CURRENT_USER,userInfo);
     }
 }

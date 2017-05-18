@@ -37,4 +37,12 @@ public class Consts {
     public static final String FORM_RESULT_COLLECTION_NAME = "FormResult";//表单收集的数据
     public static final String ERROR_MESSAGE_FOR_PAGE = "ErrorMsgForPage";
     public static final String CURRENT_USER = "CurrentUser";
+    public static final String ADMIN_ROLE_NAME = "admin";
+    public static final String MONITOR_ROLE_NAME = "monitor";
+    public static final String PRIMARY_ROLE_NAME = "primary";
+    public static final String ADMIN_ROLE_ID = "";
+    public static final String MONITOR_ROLE_ID = "";
+    public static final String PRIMARY_ROLE_ID = "";
+    public static final String DATABASE_ERROR = "操作失败，数据库出错，如果多吃出现，请联系管理员。";
+    public static final String OPRERATOR_MESSAGE = "operatorMessage";
 }

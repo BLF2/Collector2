@@ -7,6 +7,7 @@
 </head>
 <body>
 <div th:include="framework::MyNav('active','','')"></div>
+<div class="alert alert-danger" role="alert" th:text="${loginError}" th:style="${loginError} != null ? 'display:block' : 'display:none'"></div>
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">
@@ -24,9 +25,13 @@
                 <input type="text" class="form-control" id="userName"  name="userName" placeholder="姓名" />
             </div>
             <div class="form-group">
+                <label for="userPhone">姓名</label>
+                <input type="text" class="form-control" id="userPhone"  name="userPhone" placeholder="手机号" />
+            </div>
+            <div class="form-group">
                 <label>身份：</label>
-                <label><input type="radio" id="indentity1" name="identity" value="1" onclick="changeIdentity()" />学生</label>
-                <label><input type="radio" id="indentity2" name="identity" value="2" onclick="changeIdentity()"/>班长/教师</label>
+                <label><input type="radio" id="indentity1" name="identity" value="primary" onclick="changeIdentity()" />学生</label>
+                <label><input type="radio" id="indentity2" name="identity" value="monitor" onclick="changeIdentity()"/>班长/教师</label>
             </div>
             <div class="form-group" style="display: block" id="majorityClassDiv">
                 <label for="majorityClass">专业班级</label>
