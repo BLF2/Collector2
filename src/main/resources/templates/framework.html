@@ -60,6 +60,8 @@
         </div>
     </nav>
 </div>
+<!-- 操作提示信息-->
+<div class="alert alert-info" role="alert" th:text="${operatorMessage}" th:style="${operatorMessage} != null ? 'display:block' : 'display:none'"></div>
 
 <div th:fragment="MyFooter">
     <hr />
