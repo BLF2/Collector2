@@ -1,10 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <div th:replace="framework::BootStrapFile"></div>
+    <title>Title</title>
+    <script th:src="@{/js/CandidateWord.js}"></script>
 </head>
 <body>
-$END$
+<div th:include="framework::RoleNav('active','')"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <h2>创建信息采集模板</h2>
+        </div>
+        <div class="col-md-5">
+            <br />
+            <button class="btn btn-primary">添加一项普通信息</button>
+            <button class="btn btn-primary">添加一项强制键值对</button>
+            <div>
+                <form>
+                    <div>
+                        <div class="form-group">
+                            <label>项目名：</label>
+                            <input type="text" class="form-control" id="itermName1" name="itermName1" placeholder="项目名" />
+                        </div>
+                        <div class="checkbox">
+                            项目约束：
+                            <label>
+                                <input type="checkbox" name="itermCondition1" value="RequiredInformation"/>必填（默认为选填）
+                            </label>
+                            <label>
+                            <input type="checkbox" name="itermCondition1" value="AllowRepeat"/>允许重复（默认为不允许）
+                            </label>
+                        </div>
+                        <div class="radio">
+                            值约束：（不选择为文本类型）
+                            <label class="radio-inline">
+                                <input type="radio"   name="valueCondition1" value="single" onclick="addNewHxxForSingel()"/>
+                                单选
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio"  name="valueCondition1" value="multiple" onclick="addNewHxxForSingel()"/>
+                                多选
+                            </label>
+                            <div id="houxuanxiangwz">
+                            </div>
+                            <div id="houxuanxiang" style="display: none">
+                            <p>候选项：</p>
+                            <input class="form-control" type="text" name="choices" id="houxuanValue"/>
+                            <button type="button" class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true">增加一项</span>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true">删除本项</span>
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+
 </html>
