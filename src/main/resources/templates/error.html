@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>ERROR</title>
 </head>
 <body>
-<h1 th:text="${ERROR_MESSAGE_FOR_PAGE}"></h1>
+<h2 th:text="${ErrorMsgForPage != null ? ErrorMsgForPage : '未知错误'}"></h2>
 </body>
 </html>
