@@ -80,7 +80,7 @@ public class UserController {
             model.setViewName("error");
             return  model;
         }
-
+        return returnIndexByRole(userInfo);
     }
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ModelAndView login(@RequestParam("loginId") String loginId,
@@ -89,6 +89,11 @@ public class UserController {
         UserInfo userInfo = userService.queryUserInfoByUserNum(loginId);
         if(userInfo == null){
             model.addObject("loginError","用户名不存在");
+            model.setViewName("index");
+            return model;
+        }
+        if("0".equals(userInfo.getUserNote())){
+            model.addObject("loginError","账户被冻结.");
             model.setViewName("index");
             return model;
         }
@@ -129,7 +134,27 @@ public class UserController {
         model.setViewName("createclass");
         return  model;
     }
+    @RequestMapping("/toUserManager")
+    public ModelAndView toUserManager(ModelAndView model){
+        if(LoginUtil.currentUserIsAdmin()){
+            return this.returnIndexByRole(LoginUtil.getCurrentUser());
+        }
+        return this.returnIndexByRole(null);
 
+    }
+    @RequestMapping("/deleteUser")
+    public ModelAndView deleteUser(@RequestParam("userNum")String userNum,ModelAndView model){
+        if(LoginUtil.currentUserIsAdmin()){
+            return deleteUserIncludeDealError(userNum,model);
+        }else if(LoginUtil.cuurentUserIsMonitor()){
+            UserInfo delUserInfo = userService.queryUserInfoByUserNum(userNum);
+            UserInfo loginUserInfo = LoginUtil.getCurrentUser();
+            if(delUserInfo.getUserMajorityClass().equals(loginUserInfo.getUserMajorityClass())){
+                return deleteUserIncludeDealError(userNum,model);
+            }
+        }
+        return returnError("您对本操作没有权限。");
+    }
     public ModelAndView returnError(String errorMessage){
         ModelAndView model = new ModelAndView();
         model.setViewName("error");
@@ -142,9 +167,7 @@ public class UserController {
     public ModelAndView returnIndexByRole(UserInfo userInfo){
         ModelAndView model = new ModelAndView();
         if(userInfo == null){
-            model.addObject("loginError","未登录");
-            model.setViewName("index");
-            return model;
+            return this.returnError("未登录或者您无权产看此界面。");
         }else if(userInfo.getUserRoleInfo() == null){
             model.setViewName("index");
         }else if(userInfo.getUserRoleInfo().getUserRoleId() == null){
@@ -153,6 +176,13 @@ public class UserController {
 
         String userRoleName = userInfo.getUserRoleInfo().getUserRoleName();
         if(userRoleName.equals(Consts.ADMIN_ROLE_NAME)){
+            List<UserInfo>userListAll = userService.queryUserInfoAll();
+            List<ClassInfo>classListAll = classService.queryClassInfoAll();
+            List<UserRoleInfo>userRoleListAll = userRoleService.querUserRoleInfoAll();
+
+            model.addObject(Consts.USER_LIST_ALL,userListAll);
+            model.addObject(Consts.CLASS_LIST_ALL,classListAll);
+            model.addObject(Consts.USER_ROLE_LIST_ALL,userRoleListAll);
             model.setViewName("adminmanager");
         }else if(userRoleName.equals(Consts.MONITOR_ROLE_NAME)){
             model.setViewName("monitormanager");
@@ -160,5 +190,16 @@ public class UserController {
             model.setViewName("primarymanager");
         }
         return model;
+    }
+    private ModelAndView deleteUserIncludeDealError(String userNum,ModelAndView model){
+        try {
+            userService.deleteUserInfoByUserNum(userNum);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            model.addObject(Consts.OPRERATOR_MESSAGE,"数据库操作出错。");
+            return returnIndexByRole(LoginUtil.getCurrentUser());
+        }
+        model.addObject(Consts.OPRERATOR_MESSAGE,"删除成功。");
+        return returnIndexByRole(LoginUtil.getCurrentUser());
     }
 }
