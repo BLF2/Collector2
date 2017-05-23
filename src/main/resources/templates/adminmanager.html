@@ -11,7 +11,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Collector2</a>
+            <a class="navbar-brand" href="/">Collector2</a>
         </div>
     </div>
 </nav>
@@ -33,15 +33,15 @@
                     <td>操作</td>
                 </tr>
                 <tr th:each="userInfo : ${userListAll}">
-                    <td th:id="${'userNum'+${userInfo.userNum}}" th:text="${userInfo.userNum}"></td>
-                    <td th:id="${'userName'+${userInfo.userNum}}" th:text="${userInfo.userName}"></td>
-                    <td th:id="${'userPswd'+${userInfo.userNum}}" th:text="${userInfo.userPswd}"></td>
-                    <td th:id="${'userPhone'+${userInfo.userNum}}" th:text="${userInfo.userPhone}"></td>
-                    <td th:id="${'userMajorityClass'+${userInfo.userNum}}" th:text="${userInfo.userMajorityClass}"></td>
+                    <td th:id="'userNum'+${userInfo.userNum}" th:text="${userInfo.userNum}"></td>
+                    <td th:id="'userName'+${userInfo.userNum}" th:text="${userInfo.userName}"></td>
+                    <td th:id="'userPswd'+${userInfo.userNum}" th:text="${userInfo.userPswd}"></td>
+                    <td th:id="'userPhone'+${userInfo.userNum}" th:text="${userInfo.userPhone}"></td>
+                    <td th:id="'userMajorityClass'+${userInfo.userNum}" th:text="${userInfo.userMajorityClass}"></td>
                     <td th:text="${userInfo.userNote eq '1' ? '正常' : '冻结'}">
-                        <input th:id="${'userNote'+${userInfo.userNum}}" th:value="${userInfo.userNote}" type="hidden"/>
+                        <input th:id="${'userNote'+${userInfo.userNum}" th:value="${userInfo.userNote}" type="hidden"/>
                     </td>
-                    <td th:id="${'userRoleName'+${userInfo.userNum}}" th:text="${userInfo.userRoleInfo.userRoleName}"></td>
+                    <td th:id="'userRoleName'+${userInfo.userNum}" th:text="${userInfo.userRoleInfo.userRoleName}"></td>
                     <td>
                         <a th:href="@{/User/deleteUser(userNum=${userInfo.userNum})}" onclick="return confirmOp()">
                             <button type="button" class="btn btn-danger btn-sm">
@@ -49,9 +49,13 @@
                             </button>
                         </a>
                             <button type="button" class="btn btn-sm btn-primary btn-lg"
-                                    data-toggle="modal" data-target="#editUserInfo">
+                                    data-toggle="modal" data-target="#editUserInfo" th:onclick="|editFeilds(${userInfo.userNum})|">
                                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                             </button>
+                        <button type="button" class="btn btn-sm btn-primary btn-lg"
+                                data-toggle="modal" data-target="#editUserInfo" onclick="addUser()">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
                     </td>
                 </tr>
             </table>
@@ -62,7 +66,7 @@
 <div class="modal fade" id="editUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="post" action="#">
+            <form method="post" action="/User/updateUser" id="userEditorForm">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">修改用户信息</h4>
@@ -73,38 +77,37 @@
                         <input type="text" class="form-control" id="editUserNum" name="userNum"/>
                     </div>
                     <div class="form-group">
-                        <label for="editUserName"></label>
+                        <label for="editUserName">姓名</label>
                         <input type="text" class="form-control" id="editUserName" name="userName"/>
                     </div>
                     <div class="form-group">
-                        <label for="editUserPswd"></label>
+                        <label for="editUserPswd">密码</label>
                         <input type="text" class="form-control" id="editUserPswd" name="userPswd"/>
                     </div>
                     <div class="form-group">
-                        <label for="editUserPhone"></label>
+                        <label for="editUserPhone">手机号</label>
                         <input type="text" class="form-control" id="editUserPhone" name="userPhone"/>
                     </div>
+                    <label>用户状态</label>
+                    <div class="radio">
+                        <label>
+                        <input type="radio"  id="editUserNote1" name="userNote" value="1" checked="checked"/>正常
+                        </label>
+                        <label>
+                            <input type="radio" id="editUserNote2" name="userNote" value="0"/>冻结
+                        </label>
+                    </div>
                     <div class="select">
-                        <label for="userMajorityClass"></label>
-                        <input type="text" class="select" id="editUserMajorityClass" name="userMajorityClass"/>
-                        <select name="userMajorityClass">
-                            <option th:checked="checked" value="0">请选择班级</option>
+                        <label for="editUserMajorityClass">专业班级</label>
+                        <select name="userMajorityClass" id="editUserMajorityClass">
+                            <option selected="selected" value="0">请选择班级</option>
                             <option th:each="classInfo : ${classListAll}" th:text="${classInfo.majorityClass}" th:value="${classInfo.classId}"></option>
                         </select>
                     </div>
-                    <div class="radio">
-                        <label>用户状态</label>
-                        <label>
-                        <input type="radio"  id="editUserNote1" name="userNote" value="1" checked/>正常
-                        </label>
-                        <label>
-                            <input type="radio" th:id="editUserNote2" name="userNote" value="0"/>冻结
-                        </label>
-                    </div>
                     <div class="select">
-                        <label for="userMajorityClass"></label>
-                        <select name="userMajorityClass">
-                            <option th:checked="checked" value="0">请选择角色</option>
+                        <label for="editUserRoleInfo">角色</label>
+                        <select name="userRoleInfo" id="editUserRoleInfo">
+                            <option selected="selected" value="0">请选择角色</option>
                             <option th:each="userRoleInfo : ${userRoleListAll}" th:text="${userRoleInfo.userRoleName}" th:value="${userRoleInfo.userRoleId}"></option>
                         </select>
                     </div>
@@ -123,29 +126,21 @@
     function confirmOp() {
         return confirm("确认删除？");
     }
-    function editFeilds() {
-        readonlyList = ['userNum','userName','userPswd','userPhone',
-            'userNote1','userNote2'];
-        removeReadonly(readonlyList);
-        document.getElementById('userMajorityClass').removeAttribute('disabled');
-        document.getElementById('userRoleId').removeAttribute('disabled');
+    function editFeilds(id) {
+        document.getElementById('userEditorForm').setAttribute('action','/User/updateUser');
+        document.getElementById('editUserNum').value=document.getElementById('userNum'+id).innerHTML;
+        document.getElementById('editUserNum').setAttribute("readonly","readonly");
+        document.getElementById('editUserName').value=document.getElementById('userName'+id).innerHTML;
+        document.getElementById('editUserPswd').value=document.getElementById('userPswd'+id).innerHTML;
+        document.getElementById('editUserPhone').value=document.getElementById('userPhone'+id).innerHTML;
     }
-    function removeReadonly(ids) {
-        for(var x in ids){
-            var field = document.getElementById(x);
-            field.removeAttribute("readonly");
-        }
+    function addUser() {
+        document.getElementById('userEditorForm').setAttribute('action','/User/insertUser');
+        document.getElementById('editUserNum').removeAttribute('readonly');
+        document.getElementById('editUserNum').value='';
+        document.getElementById('editUserName').value='';
+        document.getElementById('editUserPswd').value='';
+        document.getElementById('editUserPhone').value='';
     }
 </script>
 </html>
-
-<select disabled="disabled" id="userMajorityClass" name="userMajorityClass">
-    <option th:each="classInfo : ${classListAll}" th:text="${classInfo.majorityClass}" th:checked="${classInfo.majorityClass eq userInfo.userMajorityClass ? 'checked' : ''}" th:value="${classInfo.majorityClass}"></option>
-</select>
-
-<select disabled="disabled" name="userRoleId" id="userRoleId">
-    <option th:each="userRole : ${userRoleListAll}" th:text="${userRole.userRoleName}" th:checked="${userRole.userRoleName eq userInfo.userRoleInfo.userRoleName ? 'checked' : ''}" th:value="${userRole.userRoleId}"></option>
-</select>
-
-<input type="radio" readonly="readonly" name="userNote" id="userNote1" th:value="1" th:checked="${userInfo.userNote eq '1' ? 'checked' : ''}"/>正常
-<input type="radio" readonly="readonly" name="userNote" id="userNote2" th:value="0" th:checked="${userInfo.userNote eq '0' ? 'checked' : ''}"/>冻结
