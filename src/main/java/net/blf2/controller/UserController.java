@@ -9,6 +9,7 @@ import net.blf2.service.IUserService;
 import net.blf2.service.impl.CheckRuleService;
 import net.blf2.util.Consts;
 import net.blf2.util.LoginUtil;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -144,6 +145,8 @@ public class UserController {
     }
     @RequestMapping("/deleteUser")
     public ModelAndView deleteUser(@RequestParam("userNum")String userNum,ModelAndView model){
+        if(LoginUtil.getCurrentUser() == null)
+            return returnError("未登录");
         if(LoginUtil.currentUserIsAdmin()){
             return deleteUserIncludeDealError(userNum,model);
         }else if(LoginUtil.cuurentUserIsMonitor()){
@@ -154,6 +157,114 @@ public class UserController {
             }
         }
         return returnError("您对本操作没有权限。");
+    }
+    @RequestMapping(value = "/updateUser",method = RequestMethod.POST)
+    public ModelAndView updateUser(@RequestParam("userNum")String userNum,
+                                   @RequestParam("userName")String userName,
+                                   @RequestParam("userPswd")String userPswd,
+                                   @RequestParam("userPhone")String userPhone,
+                                   @RequestParam("userNote")String userNote,
+                                   @RequestParam("userMajorityClass")String userMajorityClass,
+                                   @RequestParam("userRoleInfoId")String userRoleInfoId,
+                                   ModelAndView model){
+        if(LoginUtil.getCurrentUser() == null)
+            return returnError("未登录，不能进行此操作");
+        UserInfo updUser = new UserInfo();
+        updUser.setUserNum(userNum);
+        updUser.setUserName(userName);
+        updUser.setUserPswd(userPswd);
+        updUser.setUserNote(userNote);
+        updUser.setUserMajorityClass(userMajorityClass);
+        updUser.setUserPhone(userPhone);
+        UserRoleInfo userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(userRoleInfoId);
+        if(userRoleInfo == null){
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，用户角色设定错误。");
+            return model;
+        }
+        updUser.setUserRoleInfo(userRoleInfo);
+        if(LoginUtil.currentUserIsAdmin()){
+            try {
+                userService.updateUserInfo(updUser);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                model.addObject(Consts.OPRERATOR_MESSAGE,"数据库出错。");
+                model.setViewName("adminmanager");
+                return model;
+            }
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作成功.");
+            model.setViewName("adminmanager");
+            return model;
+        }else if(LoginUtil.cuurentUserIsMonitor()){
+            if(LoginUtil.getCurrentUser().getUserMajorityClass().equals(userMajorityClass)){
+
+                try {
+                    userService.updateUserInfo(updUser);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    model.addObject(Consts.OPRERATOR_MESSAGE,"数据库出错。");
+                    model.setViewName("monitormanager");
+                    return model;
+                }
+                model.addObject(Consts.OPRERATOR_MESSAGE,"更新成功。");
+                model.setViewName("");
+                return model;
+            }
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，非本班同学。");
+            model.setViewName("");
+        }else if(LoginUtil.currentUserIsPrimary()){
+            if(LoginUtil.getCurrentUser().getUserNum().equals(userNum)){
+                try {
+                    userService.updateUserInfo(updUser);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    model.addObject(Consts.OPRERATOR_MESSAGE,"更新成功。");
+                    model.setViewName("");
+                }
+                model.addObject(Consts.OPRERATOR_MESSAGE,"更新成功。");
+                model.setViewName("");
+                return model;
+            }
+            model.addObject(Consts.OPRERATOR_MESSAGE,"非本人操作");
+        }
+        return returnError("非法操作");
+    }
+    @RequestMapping(value = "/insertUser",method = RequestMethod.POST)
+    public ModelAndView insertUser(@RequestParam("userNum")String userNum,
+                                   @RequestParam("userName")String userName,
+                                   @RequestParam("userPswd")String userPswd,
+                                   @RequestParam("userPhone")String userPhone,
+                                   @RequestParam("userNote")String userNote,
+                                   @RequestParam("userMajorityClass")String userMajorityClass,
+                                   @RequestParam("userRoleInfoId")String userRoleInfoId,
+                                   ModelAndView model){
+        if(LoginUtil.getCurrentUser() == null)
+            return returnError("未登录或未授权");
+        UserInfo newUser = new UserInfo();
+        newUser.setUserNum(userNum);
+        newUser.setUserName(userName);
+        newUser.setUserPswd(userPswd);
+        newUser.setUserNote(userNote);
+        newUser.setUserMajorityClass(userMajorityClass);
+        newUser.setUserPhone(userPhone);
+        UserRoleInfo userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(userRoleInfoId);
+        if(userRoleInfo == null){
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，用户角色设定错误。");
+            return model;
+        }
+        newUser.setUserRoleInfo(userRoleInfo);
+        if (LoginUtil.currentUserIsAdmin()){
+            try {
+                userService.insertUserInfo(newUser);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                model.addObject(Consts.OPRERATOR_MESSAGE,"数据库出错.");
+                model.setViewName("adminmanager");
+            }
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作成功。");
+            model.setViewName("adminmanager");
+            return model;
+        }
+        return returnError("非法操作");
     }
     public ModelAndView returnError(String errorMessage){
         ModelAndView model = new ModelAndView();
