@@ -106,7 +106,7 @@
                     </div>
                     <div class="select">
                         <label for="editUserRoleInfo">角色</label>
-                        <select name="userRoleInfo" id="editUserRoleInfo">
+                        <select name="userRoleInfoId" id="editUserRoleInfo">
                             <option selected="selected" value="0">请选择角色</option>
                             <option th:each="userRoleInfo : ${userRoleListAll}" th:text="${userRoleInfo.userRoleName}" th:value="${userRoleInfo.userRoleId}"></option>
                         </select>
