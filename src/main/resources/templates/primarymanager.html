@@ -1,15 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-
     <div th:replace="framework::BootStrapFile"></div>
+    <title>admin</title>
     <link th:href="@{/css/dashboard.css}" rel="stylesheet"/>
     <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
     <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
-    <title>班长管理界面</title>
 </head>
 <body>
-
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -22,13 +20,9 @@
     <div class="row">
         <div class="col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li><a href="/User/createClass">创建班级</a></li>
+                <li><a>个人信息</a></li>
                 <br />
-                <li><a>创建信息采集</a></li>
-                <br />
-                <li><a>查看本班所有同学</a></li>
-                <br />
-                <li><a>查看我发布的信息提交</a></li>
+                <li><a>消息信息</a></li>
                 <br />
             </ul>
         </div>

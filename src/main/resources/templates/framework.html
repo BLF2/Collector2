@@ -61,7 +61,7 @@
     </nav>
 </div>
 <!-- 操作提示信息-->
-<div class="alert alert-info" role="alert" th:text="${operatorMessage}" th:style="${operatorMessage} != null ? 'display:block' : 'display:none'"></div>
+<div th:fragment="operatorMessage" class="alert alert-info" role="alert" th:text="${operatorMessage}" th:style="${operatorMessage} != null ? 'display:block' : 'display:none'"></div>
 
 <div th:fragment="MyFooter">
     <hr />
@@ -69,6 +69,7 @@
         <p>&copy; 2016 Company, Inc.</p>
     </footer>
 </div>
+<!-- 引入bootstrap -->
 <div th:fragment="BootStrapFile">
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -76,6 +77,23 @@
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</div>
+<!-- admin manager left-->
+<div th:fragment="AdminManagerPageLeft(userActv,classActv,messageActv,ruleActv,roleActv)">
+<div class="col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <li th:class="${userActv}"><a href="/User/toUserManager">用户信息管理</a></li>
+        <br />
+        <li th:class="${classActv}"><a href="/User/toClassManager">班级信息管理</a></li>
+        <br />
+        <li th:class="${messageActv}"><a href="/User/toMessageManager">消息信息管理</a></li>
+        <br />
+        <li th:class="${ruleActv}"><a href="/User/toRuleManager">权限信息管理</a></li>
+        <br />
+        <li th:class="${roleActv}"><a href="/User/RoleManager">角色信息管理</a></li>
+        <br />
+    </ul>
+</div>
 </div>
 </body>
 </html>

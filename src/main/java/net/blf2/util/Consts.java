@@ -45,4 +45,8 @@ public class Consts {
     public static final String PRIMARY_ROLE_ID = "";
     public static final String DATABASE_ERROR = "操作失败，数据库出错，如果多吃出现，请联系管理员。";
     public static final String OPRERATOR_MESSAGE = "operatorMessage";
+    public static final String USER_LIST_ALL = "userListAll";
+    public static final String CLASS_LIST_ALL = "classListAll";
+    public static final String USER_ROLE_LIST_ALL = "userRoleListAll";
+    public static final String CONST_APOS = "ConstApos";
 }
