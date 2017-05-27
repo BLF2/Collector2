@@ -32,3 +32,13 @@ ALTER TABLE UserRoleRuleRelation ADD CONSTRAINT relationRuleFK FOREIGN KEY (rela
 ALTER TABLE UserInfo ADD CONSTRAINT userInfoRoleFK FOREIGN KEY (userRoleId) REFERENCES UserRoleInfo(userRoleId) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE MessageInfo ADD CONSTRAINT messageUserFK1 FOREIGN KEY (senderId) REFERENCES UserInfo(userNum) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE MessageInfo ADD CONSTRAINT messageUserFk2 FOREIGN KEY (recieverId) REFERENCES UserInfo(userNum) ON UPDATE CASCADE ON DELETE CASCADE;
+
+INSERT INTO UserRoleInfo(userRoleId,userRoleName,userRoleNote)VALUES
+('2809ca86-ee93-406a-b6f4-038fa8866c2e','admin','');
+INSERT INTO UserRoleInfo VALUES ('0fac12ab-5a70-4d69-b7d5-9ba787180a32','monitor','');
+INSERT INTO UserRoleInfo VALUES ('ef50010f-e2f5-4e55-abc1-843d3723d61b','primary','');
+
+INSERT INTO RuleInfo(ruleId, ruleName) VALUES ('bcfb0721-daea-44ce-ab7e-9b3ac288fd70','createClass');
+
+INSERT INTO UserRoleRuleRelation (relationRoleId,relationRuleId) VALUES
+('0fac12ab-5a70-4d69-b7d5-9ba787180a32','bcfb0721-daea-44ce-ab7e-9b3ac288fd70');
