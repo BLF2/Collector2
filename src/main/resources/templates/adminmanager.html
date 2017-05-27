@@ -38,8 +38,7 @@
                     <td th:id="'userPswd'+${userInfo.userNum}" th:text="${userInfo.userPswd}"></td>
                     <td th:id="'userPhone'+${userInfo.userNum}" th:text="${userInfo.userPhone}"></td>
                     <td th:id="'userMajorityClass'+${userInfo.userNum}" th:text="${userInfo.userMajorityClass}"></td>
-                    <td th:text="${userInfo.userNote eq '1' ? '正常' : '冻结'}">
-                        <input th:id="${'userNote'+${userInfo.userNum}" th:value="${userInfo.userNote}" type="hidden"/>
+                    <td th:id="'userNote'+${userInfo.userNum}" th:text="${userInfo.userNote eq '1' ? '正常' : '冻结'}">
                     </td>
                     <td th:id="'userRoleName'+${userInfo.userNum}" th:text="${userInfo.userRoleInfo.userRoleName}"></td>
                     <td>
@@ -91,7 +90,7 @@
                     <label>用户状态</label>
                     <div class="radio">
                         <label>
-                        <input type="radio"  id="editUserNote1" name="userNote" value="1" checked="checked"/>正常
+                        <input type="radio"  id="editUserNote1" name="userNote" value="1"/>正常
                         </label>
                         <label>
                             <input type="radio" id="editUserNote2" name="userNote" value="0"/>冻结
@@ -101,7 +100,7 @@
                         <label for="editUserMajorityClass">专业班级</label>
                         <select name="userMajorityClass" id="editUserMajorityClass">
                             <option selected="selected" value="0">请选择班级</option>
-                            <option th:each="classInfo : ${classListAll}" th:text="${classInfo.majorityClass}" th:value="${classInfo.classId}"></option>
+                            <option th:each="classInfo : ${classListAll}" th:value="${classInfo.majorityClass}" th:text="${classInfo.majorityClass}"></option>
                         </select>
                     </div>
                     <div class="select">
@@ -115,7 +114,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
-                    <button type="button" class="btn btn-primary">保存</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
                 </div>
             </form>
         </div>
@@ -133,6 +132,10 @@
         document.getElementById('editUserName').value=document.getElementById('userName'+id).innerHTML;
         document.getElementById('editUserPswd').value=document.getElementById('userPswd'+id).innerHTML;
         document.getElementById('editUserPhone').value=document.getElementById('userPhone'+id).innerHTML;
+        if(document.getElementById("userNote"+id).innerHTML== "正常")
+            document.getElementById("editUserNote1").checked = "checked";
+        else
+            document.getElementById("editUserNote2").checked = "checked";
     }
     function addUser() {
         document.getElementById('userEditorForm').setAttribute('action','/User/insertUser');
