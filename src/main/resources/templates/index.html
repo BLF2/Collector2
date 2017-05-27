@@ -17,7 +17,7 @@
 </head>
 <body>
 <div th:include="framework::MyNav('active','','')"></div>
-<div class="alert alert-danger" role="alert" th:text="${loginError}" th:style="${loginError} != null ? 'display:block' : 'display:none'"></div>
+<div th:class="${loginErrorClass != null ? loginErrorClass : 'alert alert-danger'}" role="alert" th:text="${loginError}" th:style="${loginError} != null ? 'display:block' : 'display:none'"></div>
 <div class="jumbotron">
     <div class="container">
         <h1>Collector2</h1>

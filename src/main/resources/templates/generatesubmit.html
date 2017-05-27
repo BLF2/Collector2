@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+
+    <div th:replace="framework::BootStrapFile"></div>
+
+    <title>生成预览</title>
 </head>
 <body>
-$END$
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-7">
+        <div>
+            <label th:text="">姓名：</label>
+            <input type="hidden" name="iterm[0].key" value=""/>
+            <input type="text" name=""/>
+        </div>
+    </div>
+</div>
 </body>
 </html>
