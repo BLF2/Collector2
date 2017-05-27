@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">
-        <form method="post" action="#">
+        <form method="post" action="/User/register">
             <div class="form-group">
                 <label for="userNum">学号</label>
                 <input type="text" class="form-control" id="userNum" name="userNum" placeholder="学号，最长11位" maxlength="11" />
@@ -25,12 +25,12 @@
                 <input type="text" class="form-control" id="userName"  name="userName" placeholder="姓名" />
             </div>
             <div class="form-group">
-                <label for="userPhone">姓名</label>
+                <label for="userPhone">手机号</label>
                 <input type="text" class="form-control" id="userPhone"  name="userPhone" placeholder="手机号" />
             </div>
             <div class="form-group">
                 <label>身份：</label>
-                <label><input type="radio" id="indentity1" name="identity" value="primary" onclick="changeIdentity()" />学生</label>
+                <label><input type="radio" id="indentity1" name="identity" value="primary" onclick="changeIdentity()" checked="checked"/>学生</label>
                 <label><input type="radio" id="indentity2" name="identity" value="monitor" onclick="changeIdentity()"/>班长/教师</label>
             </div>
             <div class="form-group" style="display: block" id="majorityClassDiv">
@@ -39,6 +39,20 @@
                     <option value="0">请选择专业班级</option>
                     <option th:each="majorityClassMap: ${MajorityClassMap}" th:value="${majorityClassMap.key}" th:text="${majorityClassMap.value}"></option>
                 </select>
+            </div>
+            <div id="createClass" style="display: none">
+                <div class="form-group">
+                    <label>专业名称</label>
+                    <input type="text" class="form-control" name="majorityName" placeholder="如：软件工程"/>
+                </div>
+                <div class="form-group">
+                    <label>入学年份</label>
+                    <input type="text" class="form-control" name="userGrade" placeholder="如：2013"/>
+                </div>
+                <div class="form-group">
+                    <label>班级编号</label>
+                    <input type="text" class="form-control" name="classNum" placeholder="如：03"/>
+                </div>
             </div>
             <button type="submit" class="btn btn-default">提交</button>
         </form>
@@ -52,9 +66,13 @@
         if(identity1.checked){
             var majorClass = document.getElementById("majorityClassDiv");
             majorClass.style.display='block';
+            var createClass = document.getElementById("createClass");
+            createClass.style.display='none';
         }else if(identity2.checked){
             var majorClass = document.getElementById("majorityClassDiv");
             majorClass.style.display='none';
+            var createClass = document.getElementById("createClass");
+            createClass.style.display='block';
         }
     }
 </script>
