@@ -296,6 +296,13 @@ public class UserController {
         }
         return returnError("非法操作");
     }
+    @RequestMapping(value = "/toMonitorManager",method = RequestMethod.POST)
+    public ModelAndView toMonitorManager(ModelAndView model){
+        if(LoginUtil.cuurentUserIsMonitor()){
+            return returnIndexByRole(LoginUtil.getCurrentUser());
+        }
+        return returnError("未登录或者未授权");
+    }
     public ModelAndView returnError(String errorMessage){
         ModelAndView model = new ModelAndView();
         model.setViewName("error");
@@ -326,6 +333,8 @@ public class UserController {
             model.addObject(Consts.USER_ROLE_LIST_ALL,userRoleListAll);
             model.setViewName("adminmanager");
         }else if(userRoleName.equals(Consts.MONITOR_ROLE_NAME)){
+            List<UserInfo>userInfoList = classService.queryUserInfosByMojrityClass(userInfo.getUserMajorityClass());
+            model.addObject(Consts.USER_LIST_BY_CLASSNAME,userInfoList);
             model.setViewName("monitormanager");
         }else{
             model.setViewName("primarymanager");

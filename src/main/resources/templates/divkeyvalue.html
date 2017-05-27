@@ -15,7 +15,7 @@
         <div class="col-md-5">
             <br />
             <div>
-                <form action="/Submit/submitDiv" method="post">
+                <form action="/Submit/submitDiv" method="post" id="divKeyValueForm">
                     <div id="itemDiv0">
                         <div class="form-group">
                             <label>标题：</label>
@@ -52,13 +52,17 @@
                             <br />
                         </div>
                     </div>
-                    <button class="btn btn-primary" type="submit">设定完成，保存</button>
                 </form>
                 <button class="btn btn-primary" onclick="addPrimaryIterm()">添加一项普通信息</button>
+                <button class="btn btn-primary" type="button" onclick="submitInfo()">设定完成，保存</button>
             </div>
         </div>
     </div>
 </div>
 </body>
-
+<script type="text/javascript">
+    function submitInfo() {
+        document.getElementById("divKeyValueForm").submit();
+    }
+</script>
 </html>

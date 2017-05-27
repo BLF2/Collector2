@@ -55,4 +55,12 @@ public class SubmitController {
         modelAndView.setViewName("");
         return modelAndView;
     }
+    @RequestMapping("toDivKeyValue")
+    public ModelAndView toDivKeyValue(ModelAndView model){
+        if(LoginUtil.cuurentUserIsMonitor() || LoginUtil.currentUserIsAdmin()){
+            model.setViewName("divkeyvalue");
+            return model;
+        }
+        return userController.returnError("未登录或者未授权");
+    }
 }

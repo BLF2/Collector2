@@ -49,4 +49,5 @@ public class Consts {
     public static final String CLASS_LIST_ALL = "classListAll";
     public static final String USER_ROLE_LIST_ALL = "userRoleListAll";
     public static final String CONST_APOS = "ConstApos";
+    public static final String USER_LIST_BY_CLASSNAME = "userListByClassName";
 }
