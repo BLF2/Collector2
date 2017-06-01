@@ -3,7 +3,6 @@
 <head>
     <div th:replace="framework::BootStrapFile"></div>
     <title>DivKeyValue</title>
-    <script type="text/javascript" th:src="@{/js/CandidateWord.js}"></script>
 </head>
 <body>
 <div th:include="framework::RoleNav('active','')"></div>
@@ -19,22 +18,22 @@
                     <div id="itemDiv0">
                         <div class="form-group">
                             <label>标题：</label>
-                            <input type="text" class="form-control" name="infoTemplateForm.introductionString" placeholder="标题" />
+                            <input type="text" class="form-control" name="introductionString" placeholder="标题" />
                             <hr />
                         </div>
                         <div class="form-group">
                             <label>结束时间：</label>
-                            <input type="date" class="form-control" name="infoTemplateForm.endDateTime" placeholder="结束时间" />
+                            <input type="date" class="form-control" name="endDateTime" placeholder="结束时间" />
                             <hr />
                         </div>
                         <div class="form-group">
                             <label>项目名：</label>
-                            <input type="text" class="form-control" name="infoTemplateForm.infoTemplateList[0].itermName" placeholder="项目名" />
+                            <input type="text" class="form-control" name="infoTemplateList[0].itermName" placeholder="项目名" />
                         </div>
                         <div class="checkbox">
                             <span>项目约束：</span>
                             <label>
-                                <input type="checkbox" name="infoTemplateForm.infoTemplateList[0].itermCondition" value="RequiredInformation"/><div>必填（默认为选填）</div>
+                                <input type="checkbox" name="infoTemplateList[0].itermCondition" value="RequiredInformation"/><div>必填（默认为选填）</div>
                             </label>
                             <!--<label>-->
                                 <!--<input type="checkbox" name="itermCondition" value="AllowRepeat"/><div>允许重复（默认为不允许）</div>-->
@@ -42,7 +41,7 @@
                         </div>
                         <div class="select">
                             <span>值约束：</span>
-                            <select name="infoTemplateForm.infoTemplateList[0].valueCondition" onchange="chooseToSelect(this)">
+                            <select name="infoTemplateList[0].valueCondition" onchange="chooseToSelect(this)">
                                 <option value="text" selected="selected" >文本</option>
                                 <option value="date">日期</option>
                                 <option value="single" >单选</option>
@@ -53,13 +52,14 @@
                         </div>
                     </div>
                 </form>
-                <button class="btn btn-primary" onclick="addPrimaryIterm()">添加一项普通信息</button>
+                <button class="btn btn-primary" onclick="addPrimaryIterm()" type="button">添加一项信息</button>
                 <button class="btn btn-primary" type="button" onclick="submitInfo()">设定完成，保存</button>
             </div>
         </div>
     </div>
 </div>
 </body>
+<script type="text/javascript" th:src="@{/js/CandidateWord.js}"></script>
 <script type="text/javascript">
     function submitInfo() {
         document.getElementById("divKeyValueForm").submit();

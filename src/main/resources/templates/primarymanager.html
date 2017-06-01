@@ -27,6 +27,7 @@
             </ul>
         </div>
         <div class="col-md-10">
+            <div th:fragment="framework::operatorMessage" class="alert alert-info" role="alert" th:text="${operatorMessage}" th:style="${operatorMessage} != null ? 'display:block' : 'display:none'"></div>
             <p>默认用户信息。</p>
         </div>
     </div>

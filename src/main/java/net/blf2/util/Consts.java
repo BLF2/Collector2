@@ -50,4 +50,7 @@ public class Consts {
     public static final String USER_ROLE_LIST_ALL = "userRoleListAll";
     public static final String CONST_APOS = "ConstApos";
     public static final String USER_LIST_BY_CLASSNAME = "userListByClassName";
+    public static final String TEMPLATE_FOR_PAGE = "templateForPage";
+    public static final String SUBMIT_URL="submitURL";
+    public static final String FORM_RESULT_INFO = "formResultInfo";
 }

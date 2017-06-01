@@ -2,7 +2,7 @@ package net.blf2.service.impl;
 
 import com.google.gson.Gson;
 import net.blf2.dao.MongoOperator;
-import net.blf2.entity.InfoTemplateForm;
+import net.blf2.entity.*;
 import net.blf2.util.Consts;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class TemplateService {
         return null;
     }
     public List<InfoTemplateForm> queryInfoTemplateFormAll(){
-        List<Document> documentListAll = new LinkedList<>();
+        List<Document> documentListAll;
         List<InfoTemplateForm> infoTemplateFormAll = new LinkedList<>();
         documentListAll = MongoOperator.findAllDocuments(databaseName,collectionName);
         if(documentListAll != null){
@@ -71,5 +71,100 @@ public class TemplateService {
         }
         return null;
     }
-
+    public TemplateForPage coverterForTemplate(InfoTemplateForm infoTemplateForm){
+        if(infoTemplateForm == null)
+            return null;
+        TemplateForPage templateForPage = new TemplateForPage();
+        templateForPage.setTemplateId(infoTemplateForm.getTemplateId());
+        templateForPage.setIntroductionString(infoTemplateForm.getIntroductionString());
+        List<TemplateToData> templateToDataList = new LinkedList<>();
+        for(InfoTemplate infoTemplate : infoTemplateForm.getInfoTemplateList()){
+            TemplateToData templateToData = new TemplateToData();
+            templateToData.setItermnName(infoTemplate.getItermName());
+            if(infoTemplate.getItermCondition() != null && infoTemplate.getItermCondition().equals("RequiredInformation"))
+                templateToData.setRequirement(true);
+            String valueClassification = infoTemplate.getValueCondition();
+            templateToData.setItermValueClassification(valueClassification);
+            if("single".equals(valueClassification) || "multiple".equals(valueClassification)){
+                String content = infoTemplate.getConditionValue();
+                if(content != null){
+                    String[] contentSplit = content.split(",");
+                    templateToData.setItermValueList(Arrays.asList(contentSplit));
+                }
+            }else if("forceKeyValue".equals(valueClassification)){
+                String multipleContent = infoTemplate.getConditionValue();
+                if(multipleContent != null){
+                    String[] singleContentKeyValue = multipleContent.split(",");
+                    Map<String,String>kevValueMap = new HashMap<>();
+                    for(String keyValue : singleContentKeyValue){
+                        String[] keysAndValues = keyValue.split("#");
+                        if(keysAndValues.length >= 2){
+                            kevValueMap.put(keysAndValues[0],keysAndValues[1]);
+                        }
+                    }
+                    kevValueMap.put("其它","");
+                    templateToData.setItermKeyValues(kevValueMap);
+                }
+            }
+            templateToDataList.add(templateToData);
+        }
+        templateForPage.setTemplateToDataList(templateToDataList);
+        return templateForPage;
+    }
+    public TemplateForPage coverterForTemplateByTemplateId(String templateId){
+        InfoTemplateForm infoTemplateForm = this.queryInfoTemplateById(templateId);
+        if(infoTemplateForm == null)
+            return null;
+        return this.coverterForTemplate(infoTemplateForm);
+    }
+    public List<InfoTemplateForm> queryInfoTemplateFormAllByFilter(Map<String,Object>queryMap){
+        List<Document> documentListAll = new LinkedList<>();
+        documentListAll = MongoOperator.findAllDocumentsByFilter(databaseName,collectionName,queryMap);
+        List<InfoTemplateForm> infoTemplateFormList = new LinkedList<>();
+        if(documentListAll != null){
+            for(Document document : documentListAll){
+                if(document != null && document.get(Consts.DIY_FORM_INFO) != null){
+                    infoTemplateFormList.add(gson.fromJson((String)document.get(Consts.DIY_FORM_INFO),InfoTemplateForm.class));
+                }
+            }
+            return infoTemplateFormList.size() > 0 ? infoTemplateFormList : null;
+        }
+        return null;
+    }
+    public boolean insertFormResult(FormResult formResult){
+        if(formResult == null)
+            return false;
+        Map<String,Object>resultMap = new HashMap<>();
+        resultMap.put("_id",formResult.getTemplateId());
+        resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));
+        MongoOperator.insertDocument(databaseName,collectionForResult,resultMap);
+        return true;
+    }
+    public boolean deleteFromResult(String templateId){
+        if(templateId == null)
+            return false;
+        Map<String,Object>queryMap = new HashMap<>();
+        queryMap.put("_id",templateId);
+        return MongoOperator.deleteDocumentById(databaseName,collectionForResult,queryMap);
+    }
+    public FormResult queryFromResult(String templateId){
+        if(templateId == null)
+            return null;
+        Map<String,Object>queryMap = new HashMap<>();
+        queryMap.put("_id",templateId);
+        Document document =  MongoOperator.findDocumentById(databaseName,collectionForResult,queryMap);
+        if(document != null && document.get(Consts.FORM_RESULT_INFO) != null){
+            FormResult formResult = gson.fromJson((String)document.get(Consts.FORM_RESULT_INFO),FormResult.class);
+            return formResult;
+        }
+        return null;
+    }
+    public boolean updateFormResult(FormResult formResult){
+        if(formResult == null)
+            return false;
+        Map<String,Object>resultMap = new HashMap<>();
+        resultMap.put("_id",formResult.getTemplateId());
+        resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));
+        return MongoOperator.updateDocument(databaseName,collectionForResult,resultMap);
+    }
 }

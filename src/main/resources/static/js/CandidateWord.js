@@ -31,7 +31,7 @@ function addInputForValueCondition(ele) {
     div.setAttribute("id","valueCondition"+id);
     var input = document.createElement("input");
     input.setAttribute("type","text");
-    input.setAttribute("name","infoTemplateForm.infoTemplateList["+(indexForKeyValue-1)+"].conditionValue");
+    input.setAttribute("name","infoTemplateList["+(indexForKeyValue-1)+"].conditionValue");
     input.setAttribute("placeholder","多个项目请用英文逗号隔开");
     input.setAttribute("class","form-control");
     input.setAttribute("id","valueCondition"+id+"input");
@@ -46,7 +46,7 @@ function addPrimaryIterm() {
     var buttonForDel = document.createElement("button");
     buttonForDel.setAttribute("type","button");
     buttonForDel.setAttribute("class","btn btn-danger btn-sm");
-    buttonForDel.setAttribute("onclick","deleteThisIterm(this)");
+    buttonForDel.setAttribute("onclick","deleteThisItem(this)");
     var spanForDel = document.createElement("span");
     spanForDel.setAttribute("class","glyphicon glyphicon-trash");
     spanForDel.setAttribute("aria-hidden","true");
@@ -54,7 +54,7 @@ function addPrimaryIterm() {
     var input1 = document.createElement("input");
     input1.setAttribute("type","text");
     input1.setAttribute("class","form-control");
-    input1.setAttribute("name","infoTemplateForm.infoTemplateList["+indexForKeyValue+"].itermName");
+    input1.setAttribute("name","infoTemplateList["+indexForKeyValue+"].itermName");
     input1.setAttribute("placeholder","项目名");
     var div1 = document.createElement("div");
     div1.setAttribute("class","form-group");
@@ -66,7 +66,7 @@ function addPrimaryIterm() {
     var label2 = document.createElement("label");
     var input2 = document.createElement("input");
     input2.setAttribute("type","checkbox");
-    input2.setAttribute("name","infoTemplateForm.infoTemplateList["+indexForKeyValue+"].itermCondition");
+    input2.setAttribute("name","infoTemplateList["+indexForKeyValue+"].itermCondition");
     input2.setAttribute("value","RequiredInformation");
     var divForStr1 = document.createElement("div");
     divForStr1.innerHTML="必填（默认为选填）";
@@ -83,7 +83,7 @@ function addPrimaryIterm() {
     var span2 = document.createElement("span");
     span2.innerHTML="值约束：";
     var select1 = document.createElement("select");
-    select1.setAttribute("name","infoTemplateForm.infoTemplateList["+indexForKeyValue+"].valueCondition");
+    select1.setAttribute("name","infoTemplateList["+indexForKeyValue+"].valueCondition");
     select1.setAttribute("onchange","chooseToSelect(this)");
     var option1 = document.createElement("option");
     option1.setAttribute("selected","selected");
@@ -139,11 +139,11 @@ function addTextAreaForValue(ele) {
     textarea.setAttribute("rows","3");
     textarea.setAttribute("placeholder","键和值中间用#隔开，多个键值对用英文逗号隔开");
     textarea.setAttribute("id","valueCondition"+id+"textarea")
-    textarea.setAttribute("name","infoTemplateForm.infoTemplateList["+(indexForKeyValue-1)+"].conditionValue");
+    textarea.setAttribute("name","infoTemplateList["+(indexForKeyValue-1)+"].conditionValue");
     div.appendChild(textarea);
     pele.appendChild(div);
 }
-function deleteThisIterm(ele) {
+function deleteThisItem(ele) {
     var id = ele.parentNode.parentNode.id;
     var delEle = document.getElementById(id);
     delEle.parentNode.removeChild(delEle);

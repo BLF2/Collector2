@@ -26,8 +26,8 @@
                     <li th:class="${contactq}"><a href="#contact">Contact</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li th:text="${CurrentUser} != null ? |您好，${CurrentUser.name}| : 未登录 "></li>
-                    <li th:if="${CurrentUser} != null"><a th:href="@{/User/logOut}">注销</a></li>
+                    <li th:if="${#httpSession != null}" th:text="${#httpSession.getAttribute('CurrentUser')} != null ? '您好，'+${#httpSession.getAttribute('CurrentUser').getUserName()} : '未登录' "></li>
+                    <li th:if="${#httpSession != null and #httpSession.getAttribute('CunrrentUser') != null}"><a th:href="@{/User/logOut}">注销</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -45,7 +45,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Project name</a>
+                <a class="navbar-brand" href="/">Collector2</a>
             </div>
             <div  class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
