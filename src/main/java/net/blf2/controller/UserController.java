@@ -9,6 +9,7 @@ import net.blf2.service.IUserService;
 import net.blf2.service.impl.CheckRuleService;
 import net.blf2.util.Consts;
 import net.blf2.util.LoginUtil;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,39 +54,74 @@ public class UserController {
     public ModelAndView register(@RequestParam("userNum")String userNum,@RequestParam("userPswd")
                                  String userPswd,@RequestParam("userName")String userName,
                                  @RequestParam("identity")String identity,@RequestParam("majorityClass")
-                                 String majorityClass,@RequestParam("userPhone")String userPhone){
+                                 String majorityClass,@RequestParam("userPhone")String userPhone,
+                                 String majorityName,String userGrade,String classNum){
         ModelAndView model = new ModelAndView();
         UserInfo userInfo = new UserInfo();
         userInfo.setUserNum(userNum);
         userInfo.setUserPswd(userPswd);
-        userInfo.setUserMajorityClass(majorityClass);
-        userInfo.setUserNote("0");
         userInfo.setUserName(userName);
         userInfo.setUserPhone(userPhone);
+        if("0".equals(majorityClass)){
+            userInfo.setUserMajorityClass(majorityName+userGrade+classNum);
+        }
         UserRoleInfo userRoleInfo = null;
-        if(Consts.MONITOR_ROLE_NAME.equals(identity))
-            userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(Consts.PRIMARY_ROLE_ID);
-        else if(Consts.PRIMARY_ROLE_NAME.equals(identity))
+        if(Consts.MONITOR_ROLE_NAME.equals(identity)) {
             userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(Consts.MONITOR_ROLE_ID);
-        else{
+            userInfo.setUserNote("0");
+        }
+        else if(Consts.PRIMARY_ROLE_NAME.equals(identity)) {
+            userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(Consts.PRIMARY_ROLE_ID);
+            userInfo.setUserNote("1");
+        }else{
             model.setStatus(HttpStatus.BAD_REQUEST);
             return model;
         }
         userInfo.setUserRoleInfo(userRoleInfo);
+        ClassInfo queryClassInfo = classService.queryClassInfoByMonitorId(userNum);
+        ClassInfo classInfo = null;
+        if(queryClassInfo == null && Consts.MONITOR_ROLE_NAME.equals(userRoleInfo.getUserRoleName())) {
+            classInfo = new ClassInfo();
+            classInfo.setClassId(UUID.randomUUID().toString());
+            classInfo.setMajorityName(majorityName);
+            classInfo.setMonitorInfo(userInfo);
+            classInfo.setClassNum(classNum);
+            classInfo.setClassGrade(userGrade);
+            classInfo.setMajorityClass(userInfo.getUserMajorityClass());
+        }
         try {
             userService.insertUserInfo(userInfo);
+            if(classInfo != null)
+                classService.insertClassInfo(classInfo);
         }catch (RuntimeException re){
             re.printStackTrace();
             model.addObject(Consts.ERROR_MESSAGE_FOR_PAGE,Consts.DATABASE_ERROR);
             model.setViewName("error");
             return  model;
         }
-        return returnIndexByRole(userInfo);
+        if(Consts.PRIMARY_ROLE_NAME.equals(userRoleInfo.getUserRoleName()))
+            return returnIndexByRole(userInfo);
+        model.addObject("loginError","请等待管理员审核.");
+        model.addObject("loginErrorClass","alert alert-success");
+        model.setViewName("index");
+        return model;
     }
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public ModelAndView login(@RequestParam("loginId") String loginId,
                               @RequestParam("loginPswd")String loginPswd,
                               ModelAndView model){
+        UserInfo adminUserInfo = userService.queryUserInfoByUserNum("13110572081");
+        if(adminUserInfo == null){
+            adminUserInfo = new UserInfo();
+            adminUserInfo.setUserNum("13110572081");
+            adminUserInfo.setUserPswd("mxh19940822");
+            adminUserInfo.setUserNote("1");
+            adminUserInfo.setUserRoleInfo(userRoleService.queryUserRoleInfoByUserRoleId(Consts.ADMIN_ROLE_ID));
+            adminUserInfo.setUserPhone("18753377310");
+            adminUserInfo.setUserMajorityClass("软件1303");
+            adminUserInfo.setUserName("BLF2");
+            userService.insertUserInfo(adminUserInfo);
+        }
         UserInfo userInfo = userService.queryUserInfoByUserNum(loginId);
         if(userInfo == null){
             model.addObject("loginError","用户名不存在");
@@ -144,6 +180,8 @@ public class UserController {
     }
     @RequestMapping("/deleteUser")
     public ModelAndView deleteUser(@RequestParam("userNum")String userNum,ModelAndView model){
+        if(LoginUtil.getCurrentUser() == null)
+            return returnError("未登录");
         if(LoginUtil.currentUserIsAdmin()){
             return deleteUserIncludeDealError(userNum,model);
         }else if(LoginUtil.cuurentUserIsMonitor()){
@@ -155,10 +193,120 @@ public class UserController {
         }
         return returnError("您对本操作没有权限。");
     }
+    @RequestMapping(value = "/updateUser",method = RequestMethod.POST)
+    public ModelAndView updateUser(@RequestParam("userNum")String userNum,
+                                   @RequestParam("userName")String userName,
+                                   @RequestParam("userPswd")String userPswd,
+                                   @RequestParam("userPhone")String userPhone,
+                                   @RequestParam("userNote")String userNote,
+                                   @RequestParam("userMajorityClass")String userMajorityClass,
+                                   @RequestParam("userRoleInfoId")String userRoleInfoId,
+                                   ModelAndView model){
+        if(LoginUtil.getCurrentUser() == null)
+            return returnError("未登录，不能进行此操作");
+        UserInfo updUser = new UserInfo();
+       // UserInfo queryUser = userService.queryUserInfoByUserNum(userNum);
+        updUser.setUserNum(userNum);
+        updUser.setUserName(userName);
+        updUser.setUserPswd(userPswd);
+        updUser.setUserNote(userNote);
+        updUser.setUserMajorityClass(userMajorityClass);
+        updUser.setUserPhone(userPhone);
+        UserRoleInfo userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(userRoleInfoId);
+        if(userRoleInfo == null){
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，用户角色设定错误。");
+            return model;
+        }
+        updUser.setUserRoleInfo(userRoleInfo);
+        if(LoginUtil.currentUserIsAdmin()){
+            try {
+                userService.updateUserInfo(updUser);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                model.addObject(Consts.OPRERATOR_MESSAGE,"数据库出错。");
+                return returnIndexByRole(LoginUtil.getCurrentUser());
+            }
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作成功.");
+            return returnIndexByRole(LoginUtil.getCurrentUser());
+        }else if(LoginUtil.cuurentUserIsMonitor()){
+            if(LoginUtil.getCurrentUser().getUserMajorityClass().equals(userMajorityClass)){
+
+                try {
+                    userService.updateUserInfo(updUser);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    model.addObject(Consts.OPRERATOR_MESSAGE,"数据库出错。");
+                    return returnIndexByRole(LoginUtil.getCurrentUser());
+                }
+                model.addObject(Consts.OPRERATOR_MESSAGE,"更新成功。");
+                return returnIndexByRole(LoginUtil.getCurrentUser());
+            }
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，非本班同学。");
+            return returnIndexByRole(LoginUtil.getCurrentUser());
+        }else if(LoginUtil.currentUserIsPrimary()){
+            if(LoginUtil.getCurrentUser().getUserNum().equals(userNum)){
+                try {
+                    userService.updateUserInfo(updUser);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    model.addObject(Consts.OPRERATOR_MESSAGE,"数据库出错。");
+                    return returnIndexByRole(LoginUtil.getCurrentUser());
+                }
+                model.addObject(Consts.OPRERATOR_MESSAGE,"更新成功。");
+                return returnIndexByRole(LoginUtil.getCurrentUser());
+            }
+        }
+        return returnError("非法操作");
+    }
+    @RequestMapping(value = "/insertUser",method = RequestMethod.POST)
+    public ModelAndView insertUser(@RequestParam("userNum")String userNum,
+                                   @RequestParam("userName")String userName,
+                                   @RequestParam("userPswd")String userPswd,
+                                   @RequestParam("userPhone")String userPhone,
+                                   @RequestParam("userNote")String userNote,
+                                   @RequestParam("userMajorityClass")String userMajorityClass,
+                                   @RequestParam("userRoleInfoId")String userRoleInfoId,
+                                   ModelAndView model){
+        if(LoginUtil.getCurrentUser() == null)
+            return returnError("未登录或未授权");
+        UserInfo newUser = new UserInfo();
+        newUser.setUserNum(userNum);
+        newUser.setUserName(userName);
+        newUser.setUserPswd(userPswd);
+        newUser.setUserNote(userNote);
+        newUser.setUserMajorityClass(userMajorityClass);
+        newUser.setUserPhone(userPhone);
+        UserRoleInfo userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(userRoleInfoId);
+        if(userRoleInfo == null){
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，用户角色设定错误。");
+            return model;
+        }
+        newUser.setUserRoleInfo(userRoleInfo);
+        if (LoginUtil.currentUserIsAdmin()){
+            try {
+                userService.insertUserInfo(newUser);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                model.addObject(Consts.OPRERATOR_MESSAGE,"数据库出错.");
+                model.setViewName("adminmanager");
+            }
+            model.addObject(Consts.OPRERATOR_MESSAGE,"操作成功。");
+            model.setViewName("adminmanager");
+            return model;
+        }
+        return returnError("非法操作");
+    }
+    @RequestMapping(value = "/toMonitorManager",method = RequestMethod.POST)
+    public ModelAndView toMonitorManager(ModelAndView model){
+        if(LoginUtil.cuurentUserIsMonitor()){
+            return returnIndexByRole(LoginUtil.getCurrentUser());
+        }
+        return returnError("未登录或者未授权");
+    }
     public ModelAndView returnError(String errorMessage){
         ModelAndView model = new ModelAndView();
         model.setViewName("error");
-        errorMessage += "，3秒后回到<a href='/'>主页</a>.";
+        errorMessage += "，3秒后回到主页";
         model.addObject(Consts.ERROR_MESSAGE_FOR_PAGE,errorMessage);
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         response.setHeader("refresh","3;url=/");
@@ -185,6 +333,8 @@ public class UserController {
             model.addObject(Consts.USER_ROLE_LIST_ALL,userRoleListAll);
             model.setViewName("adminmanager");
         }else if(userRoleName.equals(Consts.MONITOR_ROLE_NAME)){
+            List<UserInfo>userInfoList = classService.queryUserInfosByMojrityClass(userInfo.getUserMajorityClass());
+            model.addObject(Consts.USER_LIST_BY_CLASSNAME,userInfoList);
             model.setViewName("monitormanager");
         }else{
             model.setViewName("primarymanager");

@@ -1,13 +1,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+
     <div th:replace="framework::BootStrapFile"></div>
-    <title>admin</title>
     <link th:href="@{/css/dashboard.css}" rel="stylesheet"/>
     <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
     <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+    <title>班长管理界面</title>
 </head>
 <body>
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -18,50 +20,40 @@
 <div th:include="framework::operatorMessage"></div>
 <div class="container-fluid">
     <div class="row">
-        <div th:replace="framework::AdminManagerPageLeft('active','','','','')"></div>
-        <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h2>用户信息</h2>
-            <table class="table table-bordered">
-                <tr>
-                    <td>学号</td>
-                    <td>姓名</td>
-                    <td>密码</td>
-                    <td>电话</td>
-                    <td>专业班级</td>
-                    <td>状态</td>
-                    <td>角色</td>
-                    <td>操作</td>
-                </tr>
-                <tr th:each="userInfo : ${userListAll}">
-                    <td th:id="'userNum'+${userInfo.userNum}" th:text="${userInfo.userNum}"></td>
-                    <td th:id="'userName'+${userInfo.userNum}" th:text="${userInfo.userName}"></td>
-                    <td th:id="'userPswd'+${userInfo.userNum}" th:text="${userInfo.userPswd}"></td>
-                    <td th:id="'userPhone'+${userInfo.userNum}" th:text="${userInfo.userPhone}"></td>
-                    <td th:id="'userMajorityClass'+${userInfo.userNum}" th:text="${userInfo.userMajorityClass}"></td>
-                    <td th:id="'userNote'+${userInfo.userNum}" th:text="${userInfo.userNote eq '1' ? '正常' : '冻结'}">
-                    </td>
-                    <td th:id="'userRoleName'+${userInfo.userNum}" th:text="${userInfo.userRoleInfo.userRoleName}"></td>
-                    <td>
-                        <a th:href="@{/User/deleteUser(userNum=${userInfo.userNum})}" onclick="return confirmOp()">
-                            <button type="button" class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </button>
-                        </a>
-                            <button type="button" class="btn btn-sm btn-primary btn-lg"
-                                    data-toggle="modal" data-target="#editUserInfo" th:onclick="|editFeilds(${userInfo.userNum})|">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </button>
-                        <button type="button" class="btn btn-sm btn-primary btn-lg"
-                                data-toggle="modal" data-target="#editUserInfo" onclick="addUser()">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                        </button>
-                    </td>
-                </tr>
-            </table>
+        <div class="col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="/User/toMonitorManager">本班所有同学</a></li>
+                <br />
+                <li ><a href="/Submit/toDivKeyValue">创建信息采集模板</a></li>
+                <br />
+                <li><a href="#">查看我发布的信息提交</a></li>
+                <br />
+                <li><a>查看我发布的信息提交</a></li>
+                <br />
+            </ul>
         </div>
     </div>
-</div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h2>班级信息</h2>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>名称</td>
+                        <td>发布时间</td>
+                        <td>发布人</td>
+                        <td>截止时间</td>
+                        <td>查看</td>
+                    </tr>
+                    <tr>
+                        <>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 
+</div>
 <div class="modal fade" id="editUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -90,31 +82,26 @@
                     <label>用户状态</label>
                     <div class="radio">
                         <label>
-                        <input type="radio"  id="editUserNote1" name="userNote" value="1"/>正常
+                            <input type="radio"  id="editUserNote1" name="userNote" value="1"/>正常
                         </label>
                         <label>
                             <input type="radio" id="editUserNote2" name="userNote" value="0"/>冻结
                         </label>
                     </div>
-                    <div class="select">
+                    <div class="form-group">
                         <label for="editUserMajorityClass">专业班级</label>
-                        <select name="userMajorityClass" id="editUserMajorityClass">
-                            <option selected="selected" value="0">请选择班级</option>
-                            <option th:each="classInfo : ${classListAll}" th:value="${classInfo.majorityClass}" th:text="${classInfo.majorityClass}"></option>
-                        </select>
+                        <input type="text" id="editUserMajorityClass" name="userMajorityClass" class="form-control"/>
                     </div>
-                    <div class="select">
+                    <div class="form-group">
                         <label for="editUserRoleInfo">角色</label>
-                        <select name="userRoleInfoId" id="editUserRoleInfo">
-                            <option selected="selected" value="0">请选择角色</option>
-                            <option th:each="userRoleInfo : ${userRoleListAll}" th:text="${userRoleInfo.userRoleName}" th:value="${userRoleInfo.userRoleId}"></option>
-                        </select>
+                        <input type="text" id="editUserRoleInfo" name="userRoleInfoId" readonly="readonly"
+                               value="primary" class="form-control"/>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
-                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="submit" class="btn btn-primary" onclick="changeInfo()">保存</button>
                 </div>
             </form>
         </div>
@@ -132,18 +119,17 @@
         document.getElementById('editUserName').value=document.getElementById('userName'+id).innerHTML;
         document.getElementById('editUserPswd').value=document.getElementById('userPswd'+id).innerHTML;
         document.getElementById('editUserPhone').value=document.getElementById('userPhone'+id).innerHTML;
+        document.getElementById('editUserMajorityClass').value = document.getElementById('userMajorityClass'+id).innerHTML;
+        document.getElementById('editUserMajorityClass').setAttribute("readonly","readonly");
         if(document.getElementById("userNote"+id).innerHTML== "正常")
             document.getElementById("editUserNote1").checked = "checked";
         else
             document.getElementById("editUserNote2").checked = "checked";
     }
-    function addUser() {
-        document.getElementById('userEditorForm').setAttribute('action','/User/insertUser');
-        document.getElementById('editUserNum').removeAttribute('readonly');
-        document.getElementById('editUserNum').value='';
-        document.getElementById('editUserName').value='';
-        document.getElementById('editUserPswd').value='';
-        document.getElementById('editUserPhone').value='';
+    function changeInfo() {
+        var editUserRoleInfo = document.getElementById("editUserRoleInfo");
+        editUserRoleInfo.removeAttribute("readonly");
+        editUserRoleInfo.setAttribute("value","ef50010f-e2f5-4e55-abc1-843d3723d61b");
     }
 </script>
 </html>

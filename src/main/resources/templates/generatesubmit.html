@@ -10,13 +10,13 @@
     <div class="col-md-2"></div>
     <div class="col-md-7">
         <p class="text-center"><h3 th:text="${templateForPage.introductionString}"></h3></p>
-        <form method="post" action="/Submit/submitData">
+        <form method="post" action="/Submit/publish">
             <input type="hidden" name="templateId" th:value="${templateForPage.templateId}"/>
             <div th:each="templateData : ${templateForPage.templateToDataList}">
                 <div class="form-group">
                     <label th:text="${templateData.itermnName}">姓名：</label>
-                    <input th:if="${templateData.itermValueClassification} eq 'text'" type="text" th:id="'forceKeyValueItemNameText'+${templateDataStat.count}" th:name="${templateData.itermnName}" class="form-control" th:required="${templateData.requirement} ? 'required'"/>
-                    <input th:if="${templateData.itermValueClassification} eq 'date'" type="date" th:id="'forceKeyValueItemNameDate'+${templateDataStat.count}" th:name="${templateData.itermnName}" class="form-control" th:required="${templateData.requirement} ? 'required'"/>
+                    <input th:if="${templateData.itermValueClassification} eq 'text'" type="text" th:id="'forceKeyValueItemNameText'+${templateDataStat.count}" th:name="${templateData.itermnName}" class="form-control" />
+                    <input th:if="${templateData.itermValueClassification} eq 'date'" type="date" th:id="'forceKeyValueItemNameDate'+${templateDataStat.count}" th:name="${templateData.itermnName}" class="form-control" />
                 </div>
                 <div th:if="${templateData.itermValueClassification} eq 'single'">
                     <select  th:name="${templateData.itermnName}" class="form-control" th:id="'forceKeyValueItemNameSingle'+${templateDataStat.count}">
@@ -25,7 +25,7 @@
                 </div>
                 <div th:if="${templateData.itermValueClassification} eq 'multiple'">
                     <input  type="checkbox" th:each="itemStr2 : ${templateData.itermValueList}"
-                            th:name="${templateData.itermnName}" th:text="${itemStr2}" th:value="${itemStr2}" th:id="'forceKeyValueItemNameMultiple'+${templateDataStat.count}+${itemStr2Stat.index}"/>
+                        th:name="${templateData.itermnName}" th:text="${itemStr2}" th:value="${itemStr2}" th:id="'forceKeyValueItemNameMultiple'+${templateDataStat.count}+${itemStr2Stat.index}"/>
                 </div>
                 <div th:if="${templateData.itermValueClassification} eq 'forceKeyValue'" th:id="'forceKeyValueDiv'+${templateDataStat.count}">
                     <input type="hidden" th:id="'forceKeyValueDiv'+${templateDataStat.count}+'TemplateName'" th:value="${templateData.itermnName}"/>
@@ -69,12 +69,18 @@
                 </div>
             </div>
             <input id="collectedData" name="collectedData" type="hidden"/>
-            <button class="btn btn-primary" type="submit" onclick="collectInfo()">提交</button>
+            <button class="btn btn-primary" type="submit" >发布</button>
         </form>
     </div>
 </div>
 </body>
 <script type="text/javascript" th:src="@{/js/generatesubmition.js}">
-</script>
 
+</script>
+<!--
+itermName:text
+itermClassification [text,date,select,checkbox,keyvalue]
+itermValueList
+itermValueMap
+-->
 </html>

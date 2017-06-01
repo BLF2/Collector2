@@ -13,29 +13,151 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Collector2</a>
+            <a class="navbar-brand" href="/">Collector2</a>
         </div>
     </div>
 </nav>
-
+<div th:include="framework::operatorMessage"></div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li><a href="/User/createClass">创建班级</a></li>
+                <li><a href="/User/toMonitorManager">本班所有同学</a></li>
                 <br />
-                <li><a>创建信息采集</a></li>
+                <li ><a href="/Submit/toDivKeyValue">创建信息采集模板</a></li>
                 <br />
-                <li><a>查看本班所有同学</a></li>
+                <li><a>查看我发布的信息提交</a></li>
                 <br />
                 <li><a>查看我发布的信息提交</a></li>
                 <br />
             </ul>
         </div>
-        <div class="col-md-10">
-            <p>默认用户信息。</p>
+    </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <div th:if="${submitURL} != null">
+                        <h3>
+                            请将URL：
+                        <p class="text-info" th:text="${submitURL}"></p>
+                            发给需要填写的同学。
+                        </h3>
+                    </div>
+                    <h2>班级信息</h2>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>学号</td>
+                            <td>姓名</td>
+                            <td>密码</td>
+                            <td>电话</td>
+                            <td>专业班级</td>
+                            <td>状态</td>
+                            <td>角色</td>
+                            <td>操作</td>
+                        </tr>
+                        <tr th:each="userInfo : ${userListByClassName}">
+                            <td th:id="'userNum'+${userInfo.userNum}" th:text="${userInfo.userNum}"></td>
+                            <td th:id="'userName'+${userInfo.userNum}" th:text="${userInfo.userName}"></td>
+                            <td th:id="'userPswd'+${userInfo.userNum}" th:text="${userInfo.userPswd}"></td>
+                            <td th:id="'userPhone'+${userInfo.userNum}" th:text="${userInfo.userPhone}"></td>
+                            <td th:id="'userMajorityClass'+${userInfo.userNum}" th:text="${userInfo.userMajorityClass}"></td>
+                            <td th:id="'userNote'+${userInfo.userNum}" th:text="${userInfo.userNote eq '1' ? '正常' : '冻结'}">
+                            </td>
+                            <td th:id="'userRoleName'+${userInfo.userNum}" th:text="${userInfo.userRoleInfo.userRoleName}"></td>
+                            <td>
+                                <a th:href="@{/User/deleteUser(userNum=${userInfo.userNum})}" onclick="return confirmOp()">
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                    </button>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-primary btn-lg"
+                                        data-toggle="modal" data-target="#editUserInfo" th:onclick="|editFeilds(${userInfo.userNum})|">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+</div>
+<div class="modal fade" id="editUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="/User/updateUser" id="userEditorForm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改用户信息</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editUserNum">学号</label>
+                        <input type="text" class="form-control" id="editUserNum" name="userNum"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserName">姓名</label>
+                        <input type="text" class="form-control" id="editUserName" name="userName"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserPswd">密码</label>
+                        <input type="text" class="form-control" id="editUserPswd" name="userPswd"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserPhone">手机号</label>
+                        <input type="text" class="form-control" id="editUserPhone" name="userPhone"/>
+                    </div>
+                    <label>用户状态</label>
+                    <div class="radio">
+                        <label>
+                            <input type="radio"  id="editUserNote1" name="userNote" value="1"/>正常
+                        </label>
+                        <label>
+                            <input type="radio" id="editUserNote2" name="userNote" value="0"/>冻结
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserMajorityClass">专业班级</label>
+                        <input type="text" id="editUserMajorityClass" name="userMajorityClass" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserRoleInfo">角色</label>
+                        <input type="text" id="editUserRoleInfo" name="userRoleInfoId" readonly="readonly"
+                               value="primary" class="form-control"/>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="submit" class="btn btn-primary" onclick="changeInfo()">保存</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 </body>
+<script type="text/javascript">
+    function confirmOp() {
+        return confirm("确认删除？");
+    }
+    function editFeilds(id) {
+        document.getElementById('userEditorForm').setAttribute('action','/User/updateUser');
+        document.getElementById('editUserNum').value=document.getElementById('userNum'+id).innerHTML;
+        document.getElementById('editUserNum').setAttribute("readonly","readonly");
+        document.getElementById('editUserName').value=document.getElementById('userName'+id).innerHTML;
+        document.getElementById('editUserPswd').value=document.getElementById('userPswd'+id).innerHTML;
+        document.getElementById('editUserPhone').value=document.getElementById('userPhone'+id).innerHTML;
+        document.getElementById('editUserMajorityClass').value = document.getElementById('userMajorityClass'+id).innerHTML;
+        document.getElementById('editUserMajorityClass').setAttribute("readonly","readonly");
+        if(document.getElementById("userNote"+id).innerHTML== "正常")
+            document.getElementById("editUserNote1").checked = "checked";
+        else
+            document.getElementById("editUserNote2").checked = "checked";
+    }
+    function changeInfo() {
+        var editUserRoleInfo = document.getElementById("editUserRoleInfo");
+        editUserRoleInfo.removeAttribute("readonly");
+        editUserRoleInfo.setAttribute("value","ef50010f-e2f5-4e55-abc1-843d3723d61b");
+    }
+</script>
 </html>

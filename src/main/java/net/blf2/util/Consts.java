@@ -40,13 +40,17 @@ public class Consts {
     public static final String ADMIN_ROLE_NAME = "admin";
     public static final String MONITOR_ROLE_NAME = "monitor";
     public static final String PRIMARY_ROLE_NAME = "primary";
-    public static final String ADMIN_ROLE_ID = "";
-    public static final String MONITOR_ROLE_ID = "";
-    public static final String PRIMARY_ROLE_ID = "";
+    public static final String ADMIN_ROLE_ID = "2809ca86-ee93-406a-b6f4-038fa8866c2e";
+    public static final String MONITOR_ROLE_ID = "0fac12ab-5a70-4d69-b7d5-9ba787180a32";
+    public static final String PRIMARY_ROLE_ID = "ef50010f-e2f5-4e55-abc1-843d3723d61b";
     public static final String DATABASE_ERROR = "操作失败，数据库出错，如果多吃出现，请联系管理员。";
     public static final String OPRERATOR_MESSAGE = "operatorMessage";
     public static final String USER_LIST_ALL = "userListAll";
     public static final String CLASS_LIST_ALL = "classListAll";
     public static final String USER_ROLE_LIST_ALL = "userRoleListAll";
     public static final String CONST_APOS = "ConstApos";
+    public static final String USER_LIST_BY_CLASSNAME = "userListByClassName";
+    public static final String TEMPLATE_FOR_PAGE = "templateForPage";
+    public static final String SUBMIT_URL="submitURL";
+    public static final String FORM_RESULT_INFO = "formResultInfo";
 }

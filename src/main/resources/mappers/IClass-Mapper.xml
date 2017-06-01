@@ -114,10 +114,13 @@
             #{classId}
         </foreach>
     </delete>
-    <select id="queryClassInfoAll" resultMap="RuleInfoResultMap" parameterType="String">
+    <select id="queryClassInfoAll" resultMap="ClassInfoResultMap" parameterType="String">
         SELECT
-        <include refid="ClassInfoColumns" />
-        FROM ClassInfo
+        <include refid="ClassInfoColumns" />,
+        <include refid="UserInfoColumns" />,
+        <include refid="UserRoleInfoColumns" />,
+        <include refid="RuleInfoColumns" />
+        <include refid="ClassJoinInUser"/>
     </select>
 
     <select id="queryClassInfoByClassId" resultMap="ClassInfoResultMap" parameterType="String">
