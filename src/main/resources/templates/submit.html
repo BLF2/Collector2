@@ -12,6 +12,7 @@
         <p class="text-center"><h3 th:text="${templateForPage.introductionString}"></h3></p>
         <form method="post" action="/Submit/submitData">
             <input type="hidden" name="templateId" th:value="${templateForPage.templateId}"/>
+            <input type="hidden" name="introductionString" th:value="${templateForPage.introductionString}"/>
             <div th:each="templateData : ${templateForPage.templateToDataList}">
                 <div class="form-group">
                     <label th:text="${templateData.itermnName}">姓名：</label>

@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <div th:replace="framework::BootStrapFile"></div>
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet"/>
+    <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
+    <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+    <title>班长管理界面</title>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Collector2</a>
+        </div>
+    </div>
+</nav>
+<div th:include="framework::operatorMessage"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="/User/toMonitorManager">本班所有同学</a></li>
+                <br />
+                <li ><a href="/Submit/toDivKeyValue">创建信息采集模板</a></li>
+                <br />
+                <li><a>查看我发布的信息提交</a></li>
+                <br />
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+                <table class="table table-bordered">
+                    <tr>
+                        <td>ID</td>
+                        <td>名称</td>
+                        <td>创建时间</td>
+                        <td>查看表单</td>
+                        <td>查看结果</td>
+                    </tr>
+                    <tr th:each="infoTemplateForm : ${infoTemplateFormList}">
+                        <td th:text="${infoTemplateForm.templateId}"></td>
+                        <td th:text="${infoTemplateForm.introductionString}"></td>
+                        <td th:text="${infoTemplateForm.createDateTime}"></td>
+                        <td><a th:href="@{/Submit/submit(templateId=${infoTemplateForm.templateId})}"><button type="button" class="btn btn-info">查看表单</button></a></td>
+                        <td><a th:href="@{/Submit/toMyFormResults(templateId=${infoTemplateForm.templateId})}"><button type="button" class="btn btn-info">查看结果</button></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

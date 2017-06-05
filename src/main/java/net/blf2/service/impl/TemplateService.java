@@ -27,6 +27,7 @@ public class TemplateService {
             return false;
         Map<String,Object>dataMap = new HashMap<>();
         dataMap.put("_id",infoTemplateForm.getTemplateId());
+        dataMap.put(Consts.CREATE_NUM,infoTemplateForm.getCreateNum());
         dataMap.put(Consts.DIY_FORM_INFO,gson.toJson(infoTemplateForm));
         return MongoOperator.insertDocument(databaseName,collectionName,dataMap);
     }
@@ -135,23 +136,33 @@ public class TemplateService {
         if(formResult == null)
             return false;
         Map<String,Object>resultMap = new HashMap<>();
-        resultMap.put("_id",formResult.getTemplateId());
-        resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));
-        MongoOperator.insertDocument(databaseName,collectionForResult,resultMap);
+        resultMap.put("_id",formResult.getTemplateId()+formResult.getSubmiterId());
+        if(MongoOperator.findDocumentById(databaseName,collectionForResult,resultMap) != null)
+        {
+            resultMap.put(Consts.TEMPLATE_ID,formResult.getTemplateId());
+            resultMap.put(Consts.SUBMITER_ID,formResult.getSubmiterId());
+            resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));
+            MongoOperator.updateDocument(databaseName,collectionForResult,resultMap);
+        }else {
+            resultMap.put(Consts.TEMPLATE_ID,formResult.getTemplateId());
+            resultMap.put(Consts.SUBMITER_ID,formResult.getSubmiterId());
+            resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));
+            MongoOperator.insertDocument(databaseName, collectionForResult, resultMap);
+        }
         return true;
     }
-    public boolean deleteFromResult(String templateId){
-        if(templateId == null)
+    public boolean deleteFromResult(String _id){
+        if(_id == null)
             return false;
         Map<String,Object>queryMap = new HashMap<>();
-        queryMap.put("_id",templateId);
+        queryMap.put("_id",_id);
         return MongoOperator.deleteDocumentById(databaseName,collectionForResult,queryMap);
     }
-    public FormResult queryFromResult(String templateId){
-        if(templateId == null)
+    public FormResult queryFromResult(String _id){
+        if(_id == null)
             return null;
         Map<String,Object>queryMap = new HashMap<>();
-        queryMap.put("_id",templateId);
+        queryMap.put("_id",_id);
         Document document =  MongoOperator.findDocumentById(databaseName,collectionForResult,queryMap);
         if(document != null && document.get(Consts.FORM_RESULT_INFO) != null){
             FormResult formResult = gson.fromJson((String)document.get(Consts.FORM_RESULT_INFO),FormResult.class);
@@ -163,8 +174,21 @@ public class TemplateService {
         if(formResult == null)
             return false;
         Map<String,Object>resultMap = new HashMap<>();
-        resultMap.put("_id",formResult.getTemplateId());
+        resultMap.put("_id",formResult.getTemplateId()+formResult.getSubmiterId());
         resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));
         return MongoOperator.updateDocument(databaseName,collectionForResult,resultMap);
+    }
+    public List<FormResult>queryResultByFilter(Map<String,Object>queryMap){
+        if(queryMap == null || queryMap.isEmpty())
+            return null;
+        List<Document>documents = MongoOperator.findAllDocumentsByFilter(databaseName,collectionForResult,queryMap);
+        if(documents == null || documents.isEmpty())
+            return null;
+        List<FormResult>formResults = new LinkedList<>();
+        for(Document document : documents){
+            FormResult formResult = gson.fromJson((String)document.get(Consts.FORM_RESULT_INFO),FormResult.class);
+            formResults.add(formResult);
+        }
+        return formResults;
     }
 }

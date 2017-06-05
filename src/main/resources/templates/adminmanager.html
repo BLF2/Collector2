@@ -136,6 +136,7 @@
             document.getElementById("editUserNote1").checked = "checked";
         else
             document.getElementById("editUserNote2").checked = "checked";
+        document.getElementById("myModalLabel").innerHTML="修改用户信息";
     }
     function addUser() {
         document.getElementById('userEditorForm').setAttribute('action','/User/insertUser');
@@ -144,6 +145,7 @@
         document.getElementById('editUserName').value='';
         document.getElementById('editUserPswd').value='';
         document.getElementById('editUserPhone').value='';
+        document.getElementById("myModalLabel").innerHTML="增加用户信息";
     }
 </script>
 </html>

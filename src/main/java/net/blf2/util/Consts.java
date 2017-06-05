@@ -53,4 +53,7 @@ public class Consts {
     public static final String TEMPLATE_FOR_PAGE = "templateForPage";
     public static final String SUBMIT_URL="submitURL";
     public static final String FORM_RESULT_INFO = "formResultInfo";
+    public static final String CREATE_NUM = "createNum";
+    public static final String SUBMITER_ID = "submiterId";
+    public static final String TEMPLATE_ID = "templateId";
 }
