@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.blf2</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>Collector2</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -72,6 +72,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>Collector2</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

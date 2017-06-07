@@ -1,6 +1,10 @@
 package net.blf2.controller;
 
+import net.blf2.dao.IMessageDao;
 import net.blf2.entity.*;
+import net.blf2.service.IClassService;
+import net.blf2.service.IMessageService;
+import net.blf2.service.IUserService;
 import net.blf2.service.impl.TemplateService;
 import net.blf2.util.Consts;
 import net.blf2.util.LoginUtil;
@@ -12,10 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by blf2 on 17-5-25.
@@ -27,6 +28,10 @@ public class SubmitController {
     private TemplateService templateService;
     @Resource
     private UserController userController;
+    @Resource
+    private IClassService classService;
+    @Resource
+    private IMessageService messageService;
 
     @RequestMapping(value = "/submitDiv")
     public ModelAndView submitDiv(InfoTemplateForm infoTemplateForm,ModelAndView modelAndView){
@@ -52,8 +57,10 @@ public class SubmitController {
             ex.printStackTrace();
             return userController.returnError("数据库出错");
         }
+        List <UserInfo> userInfoForMajorityClass = classService.queryUserInfosByMojrityClass(loginUser.getUserMajorityClass());
         TemplateForPage templateForPage = templateService.coverterForTemplateByTemplateId(infoTemplateForm.getTemplateId());
         modelAndView.addObject(Consts.TEMPLATE_FOR_PAGE,templateForPage);
+        modelAndView.addObject("userInfoForMajorityClass",userInfoForMajorityClass);
         modelAndView.setViewName("generatesubmit");
         return modelAndView;
     }
@@ -67,14 +74,26 @@ public class SubmitController {
     }
     @RequestMapping("/publish")
     public ModelAndView publish(ModelAndView model, @RequestParam("templateId")String templateId,
-                                HttpServletRequest request){
-        if(LoginUtil.getCurrentUser() == null || !LoginUtil.cuurentUserIsMonitor())
+                                HttpServletRequest request,@RequestParam(value = "selectedUserNums",required = false)String[] selectedUserNums){
+        UserInfo loginUser = LoginUtil.getCurrentUser();
+        if(loginUser == null || !LoginUtil.cuurentUserIsMonitor())
             return userController.returnError("未登录或者未授权");
         String url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()
                 +"/Submit/submit?templateId="+templateId;
-        model.addObject(Consts.SUBMIT_URL,url);
-        model.setViewName("monitormanager");
-        return model;
+        if(!(selectedUserNums == null || selectedUserNums.length == 0)){
+            for(String userNum : selectedUserNums) {
+                MessageInfo messageInfo = new MessageInfo();
+                messageInfo.setMessageId(UUID.randomUUID().toString());
+                messageInfo.setRecieverId(userNum);
+                messageInfo.setSenderId(loginUser.getUserNum());
+                messageInfo.setSendDateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                messageInfo.setMessageContent("请点击或者复制"+url+"到浏览器填写信息。");
+                messageService.insertMessageInfo(messageInfo);
+            }
+        }else {
+            model.addObject(Consts.SUBMIT_URL, url);
+        }
+        return userController.returnIndexByRole(loginUser);
     }
     @RequestMapping("/submit")
     public ModelAndView submit(@RequestParam("templateId")String templateId,ModelAndView model){
@@ -94,7 +113,8 @@ public class SubmitController {
     }
     @RequestMapping("/submitData")
     public ModelAndView submitData(@RequestParam("collectedData")String collectedData,
-                                   @RequestParam("templateId")String templateId){
+                                   @RequestParam("templateId")String templateId,
+                                   @RequestParam("introductionString")String introductionString){
         UserInfo loginUser = LoginUtil.getCurrentUser();
         if(loginUser == null)
             return userController.returnError("未登录");
@@ -102,6 +122,7 @@ public class SubmitController {
         FormResult formResult = new FormResult();
         formResult.setSubmiterId(loginUser.getUserNum());
         formResult.setSubmitDateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        formResult.setIntroductionString(introductionString);
         String decodeCollectedData = "";
         try {
             decodeCollectedData = java.net.URLDecoder.decode(collectedData,"UTF-8");
@@ -114,6 +135,31 @@ public class SubmitController {
         templateService.insertFormResult(formResult);
         model = userController.returnIndexByRole(loginUser);
         model.addObject(Consts.OPRERATOR_MESSAGE,"提交成功");
+        return model;
+    }
+    @RequestMapping("toMonitorsDiv")
+    public ModelAndView toMonitorsDiv(ModelAndView model){
+        UserInfo loginUser = LoginUtil.getCurrentUser();
+        if(loginUser == null || Consts.PRIMARY_ROLE_NAME.equals(loginUser.getUserRoleInfo().getUserRoleName())){
+            return userController.returnError("未登录或者未授权");
+        }
+        Map<String,Object>queryMap = new HashMap<>();
+        queryMap.put("createNum",loginUser.getUserNum());
+        List<InfoTemplateForm> infoTemplateFormList = templateService.queryInfoTemplateFormAllByFilter(queryMap);
+        model.addObject("infoTemplateFormList",infoTemplateFormList);
+        model.setViewName("monitorsdiv");
+        return model;
+    }
+    @RequestMapping("toMyFormResults")
+    public ModelAndView toFormResults(@RequestParam("templateId")String templateId,ModelAndView model){
+        UserInfo loginUser = LoginUtil.getCurrentUser();
+        if(loginUser == null || Consts.PRIMARY_ROLE_NAME.equals(loginUser.getUserRoleInfo().getUserRoleName()))
+            return userController.returnError("未登录或者未授权");
+        Map<String,Object>queryMap = new HashMap<>();
+        queryMap.put(Consts.TEMPLATE_ID,templateId);
+        List<FormResult> formResultList = templateService.queryResultByFilter(queryMap);
+        model.addObject("formResultList",formResultList);
+        model.setViewName("formresults");
         return model;
     }
 }

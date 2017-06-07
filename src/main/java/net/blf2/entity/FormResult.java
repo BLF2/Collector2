@@ -10,6 +10,7 @@ public class FormResult {
     private String templateId;
     private String submiterId;
     private String submitDateTime;
+    private String introductionString;
 
     public String getFormResultMap() {
         return formResultMap;
@@ -41,5 +42,13 @@ public class FormResult {
 
     public void setSubmitDateTime(String submitDateTime) {
         this.submitDateTime = submitDateTime;
+    }
+
+    public String getIntroductionString() {
+        return introductionString;
+    }
+
+    public void setIntroductionString(String introductionString) {
+        this.introductionString = introductionString;
     }
 }

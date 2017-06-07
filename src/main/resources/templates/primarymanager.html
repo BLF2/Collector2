@@ -1,36 +1,111 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+
     <div th:replace="framework::BootStrapFile"></div>
-    <title>admin</title>
     <link th:href="@{/css/dashboard.css}" rel="stylesheet"/>
     <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
     <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+    <title>个人管理界面</title>
 </head>
 <body>
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Collector2</a>
+            <a class="navbar-brand" href="/">Collector2</a>
         </div>
     </div>
 </nav>
-
+<div th:include="framework::operatorMessage"></div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-                <li><a>个人信息</a></li>
+                <li><a href="/User/toPrimaryManager">个人信息</a></li>
                 <br />
-                <li><a>消息信息</a></li>
+                <li><a href="/Message/toMyMessages">查看我的消息</a></li>
+                <br />
+                <li><a href="/Message/toMyMessages">查看历史提交</a></li>
                 <br />
             </ul>
         </div>
-        <div class="col-md-10">
-            <div th:fragment="framework::operatorMessage" class="alert alert-info" role="alert" th:text="${operatorMessage}" th:style="${operatorMessage} != null ? 'display:block' : 'display:none'"></div>
-            <p>默认用户信息。</p>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <table class="table table-bordered" th:object="${#httpServletRequest.getSession().getAttribute('CurrentUser')}">
+                    <tr>
+                        <td>姓名：</td>
+                        <td th:text="*{userName}"></td>
+                    </tr>
+                    <tr>
+                        <td>学号：</td>
+                        <td th:text="*{userNum}"></td>
+                    </tr>
+                    <tr>
+                        <td>密码：</td>
+                        <td th:text="*{userPswd}"></td>
+                    </tr>
+                    <tr>
+                        <td>手机号：</td>
+                        <td th:text="*{userPhone}"></td>
+                    </tr>
+                    <tr>
+                        <td>专业班级：</td>
+                        <td th:text="*{userMajorityClass}"></td>
+                    </tr>
+                    <tr>
+                        <td>角色：</td>
+                        <td>primary</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 </body>
+
+<div class="modal fade" id="editUserInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="post" action="/User/updateUser" id="userEditorForm">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改个人信息</h4>
+                </div>
+                <div class="modal-body" th:object="${#httpServletRequest.getSession().getAttribute('CurrentUser')}">
+                    <div class="form-group">
+                        <label for="editUserNum">学号</label>
+                        <input type="text" class="form-control" id="editUserNum" name="userNum" readonly="readonly" th:value="*{userNum}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserName">姓名</label>
+                        <input type="text" class="form-control" id="editUserName" name="userName" th:value="*{userName}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserPswd">密码</label>
+                        <input type="text" class="form-control" id="editUserPswd" name="userPswd" th:value="*{userPswd}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserPhone">手机号</label>
+                        <input type="text" class="form-control" id="editUserPhone" name="userPhone" th:value="*{userPhone}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editUserMajorityClass">专业班级</label>
+                        <input type="text" id="editUserMajorityClass" readonly="readonly" name="userMajorityClass" class="form-control" th:value="*{userMajorityClass}"/>
+                    </div>
+                    <input type="hidden" name="userRoleInfoId" th:value="*{userRoleInfo.userRoleId}"/>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 </html>
