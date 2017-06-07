@@ -25,7 +25,7 @@ CREATE TABLE ClassInfo(classId VARCHAR(100) PRIMARY KEY,majorityName VARCHAR(50)
 DROP TABLE IF EXISTS MessageInfo;
 CREATE TABLE MessageInfo(messageId VARCHAR(100) PRIMARY KEY,recieverId VARCHAR(100) NOT NULL,
 senderId varchar(100) NOT NULL,sendDateTime varchar(20),startTime VARCHAR(20),endTime
-VARCHAR(20),currentStatus int(2));
+VARCHAR(20),currentStatus int(2),messageContent VARCHAR(512));
 
 ALTER TABLE UserRoleRuleRelation ADD CONSTRAINT relationRoleFK FOREIGN KEY (relationRoleId) REFERENCES UserRoleInfo(userRoleId) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE UserRoleRuleRelation ADD CONSTRAINT relationRuleFK FOREIGN KEY (relationRuleId) REFERENCES RuleInfo(ruleId) ON UPDATE CASCADE ON DELETE CASCADE;

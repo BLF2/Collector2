@@ -1,6 +1,10 @@
 package net.blf2.controller;
 
+import net.blf2.dao.IMessageDao;
 import net.blf2.entity.*;
+import net.blf2.service.IClassService;
+import net.blf2.service.IMessageService;
+import net.blf2.service.IUserService;
 import net.blf2.service.impl.TemplateService;
 import net.blf2.util.Consts;
 import net.blf2.util.LoginUtil;
@@ -24,6 +28,10 @@ public class SubmitController {
     private TemplateService templateService;
     @Resource
     private UserController userController;
+    @Resource
+    private IClassService classService;
+    @Resource
+    private IMessageService messageService;
 
     @RequestMapping(value = "/submitDiv")
     public ModelAndView submitDiv(InfoTemplateForm infoTemplateForm,ModelAndView modelAndView){
@@ -49,8 +57,10 @@ public class SubmitController {
             ex.printStackTrace();
             return userController.returnError("数据库出错");
         }
+        List <UserInfo> userInfoForMajorityClass = classService.queryUserInfosByMojrityClass(loginUser.getUserMajorityClass());
         TemplateForPage templateForPage = templateService.coverterForTemplateByTemplateId(infoTemplateForm.getTemplateId());
         modelAndView.addObject(Consts.TEMPLATE_FOR_PAGE,templateForPage);
+        modelAndView.addObject("userInfoForMajorityClass",userInfoForMajorityClass);
         modelAndView.setViewName("generatesubmit");
         return modelAndView;
     }
@@ -64,14 +74,26 @@ public class SubmitController {
     }
     @RequestMapping("/publish")
     public ModelAndView publish(ModelAndView model, @RequestParam("templateId")String templateId,
-                                HttpServletRequest request){
-        if(LoginUtil.getCurrentUser() == null || !LoginUtil.cuurentUserIsMonitor())
+                                HttpServletRequest request,@RequestParam(value = "selectedUserNums",required = false)String[] selectedUserNums){
+        UserInfo loginUser = LoginUtil.getCurrentUser();
+        if(loginUser == null || !LoginUtil.cuurentUserIsMonitor())
             return userController.returnError("未登录或者未授权");
         String url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()
                 +"/Submit/submit?templateId="+templateId;
-        model.addObject(Consts.SUBMIT_URL,url);
-        model.setViewName("monitormanager");
-        return model;
+        if(!(selectedUserNums == null || selectedUserNums.length == 0)){
+            for(String userNum : selectedUserNums) {
+                MessageInfo messageInfo = new MessageInfo();
+                messageInfo.setMessageId(UUID.randomUUID().toString());
+                messageInfo.setRecieverId(userNum);
+                messageInfo.setSenderId(loginUser.getUserNum());
+                messageInfo.setSendDateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                messageInfo.setMessageContent("请点击或者复制"+url+"到浏览器填写信息。");
+                messageService.insertMessageInfo(messageInfo);
+            }
+        }else {
+            model.addObject(Consts.SUBMIT_URL, url);
+        }
+        return userController.returnIndexByRole(loginUser);
     }
     @RequestMapping("/submit")
     public ModelAndView submit(@RequestParam("templateId")String templateId,ModelAndView model){

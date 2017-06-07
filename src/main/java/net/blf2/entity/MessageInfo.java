@@ -12,6 +12,7 @@ public class MessageInfo {
     private String startTime;//开始时间
     private String endTime;//结束时间
     private Integer currentStatus;//当前状态
+    private String messageContent;//内容
 
     public String getMessageId() {
         return messageId;
@@ -69,6 +70,14 @@ public class MessageInfo {
         this.currentStatus = currentStatus;
     }
 
+    public String getMessageContent() {
+        return messageContent;
+    }
+
+    public void setMessageContent(String messageContent) {
+        this.messageContent = messageContent;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -82,7 +91,9 @@ public class MessageInfo {
         if (sendDateTime != null ? !sendDateTime.equals(that.sendDateTime) : that.sendDateTime != null) return false;
         if (startTime != null ? !startTime.equals(that.startTime) : that.startTime != null) return false;
         if (endTime != null ? !endTime.equals(that.endTime) : that.endTime != null) return false;
-        return currentStatus != null ? currentStatus.equals(that.currentStatus) : that.currentStatus == null;
+        if (currentStatus != null ? !currentStatus.equals(that.currentStatus) : that.currentStatus != null)
+            return false;
+        return messageContent != null ? messageContent.equals(that.messageContent) : that.messageContent == null;
     }
 
     @Override
@@ -94,6 +105,7 @@ public class MessageInfo {
         result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
         result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
         result = 31 * result + (currentStatus != null ? currentStatus.hashCode() : 0);
+        result = 31 * result + (messageContent != null ? messageContent.hashCode() : 0);
         return result;
     }
 }

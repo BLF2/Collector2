@@ -10,7 +10,7 @@
     <div class="col-md-2"></div>
     <div class="col-md-7">
         <p class="text-center"><h3 th:text="${templateForPage.introductionString}"></h3></p>
-        <form method="post" action="/Submit/publish">
+        <!--<form method="post" action="/Submit/publish">-->
             <input type="hidden" name="templateId" th:value="${templateForPage.templateId}"/>
             <div th:each="templateData : ${templateForPage.templateToDataList}">
                 <div class="form-group">
@@ -69,10 +69,54 @@
                 </div>
             </div>
             <input id="collectedData" name="collectedData" type="hidden"/>
-            <button class="btn btn-primary" type="submit" >发布</button>
-        </form>
+            <button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#gridSystemModal">发布</button>
+        <!--</form>-->
     </div>
 </div>
+
+
+<div id="gridSystemModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="/Submit/publish" method="post">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">选择需要通知的人</h4>
+            </div>
+            <div class="modal-body">
+
+                <table class="table table-bordered form-group">
+                    <tr>
+                        <td class="checkbox">
+                            <label>
+                                <input name="selectUser" id="selectUserAll" type="checkbox" onclick="selectAll()" />全选
+                            </label>
+                            </td>
+                        <td>学号</td>
+                        <td>姓名</td>
+                        <td>班级</td>
+                    </tr>
+                    <tr th:each="userInfo,userInfoStat : ${userInfoForMajorityClass}" class="form-group">
+                        <td>
+                            <input th:id="'selectUser'+${userInfoStat.count}" type="checkbox" name="selectedUserNums" th:value="${userInfo.userNum}"/>
+                        </td>
+                        <td th:id="'selectUserNum'+${userInfoStat.count}" th:text="${userInfo.userNum}" ></td>
+                        <td th:text="${userInfo.userName}"></td>
+                        <td th:text="${userInfo.userMajorityClass}"></td>
+                    </tr>
+                </table>
+                    <input type="hidden" name="templateId" th:value="${templateForPage.templateId}"/>
+                <input type="hidden" id="userInfoListSize" th:value="${#lists.size(userInfoForMajorityClass)}"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary">提交</button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 </body>
 <script type="text/javascript" th:src="@{/js/generatesubmition.js}">
 

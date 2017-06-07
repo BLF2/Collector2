@@ -1,0 +1,65 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <div th:replace="framework::BootStrapFile"></div>
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet"/>
+    <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
+    <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+    <title>班长管理界面</title>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Collector2</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h3>我的消息</h3>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <div th:replace="framework::operatorMessage"></div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>编号</td>
+                        <td>发送者</td>
+                        <td>接收者</td>
+                        <td>发送时间</td>
+                        <td>内容</td>
+                        <td>操作</td>
+                    </tr>
+                    <tr th:each="messageInfo : ${messageInfoList}">
+                        <td th:text="${messageInfoStat.count}"></td>
+                        <td th:text="${messageInfo.senderId}"></td>
+                        <td th:text="${messageInfo.recieverId}"></td>
+                        <td th:text="${messageInfo.sendDateTime}"></td>
+                        <td th:text="${messageInfo.messageContent}"></td>
+                        <td>
+                            <a th:href="@{/Message/deleteMessage(messageId=${messageInfo.messageId})}" onclick="return confirmOp()">
+                                <button type="button" class="btn btn-danger btn-sm">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function confirmOp() {
+        return confirm("确认删除？");
+    }
+</script>
+</body>
+</html>

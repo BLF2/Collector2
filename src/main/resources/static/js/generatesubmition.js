@@ -129,3 +129,21 @@ function collectInfo() {
     var deData = encodeURIComponent(dataJson);
     inputForData.value = deData;
 }
+function selectAll() {
+    var selectAllInput = document.getElementById("selectUserAll");
+    var checkedForAll = false;
+    if(selectAllInput.checked == true){
+       checkedForAll = true
+    }
+    else{
+        checkedForAll = false;
+    }
+    var maxIndex = parseInt(document.getElementById("userInfoListSize").value);
+    for(var i = 1;i <= maxIndex;i++){
+        var selectUser = document.getElementById("selectUser"+i);
+        if(checkedForAll)
+            selectUser.checked = true;
+        else
+            selectUser.checked = false;
+    }
+}

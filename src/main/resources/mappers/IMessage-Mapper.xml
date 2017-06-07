@@ -9,19 +9,20 @@
         <result property="startTime" column="startTime"/>
         <result property="endTime" column="endTime"/>
         <result property="currentStatus" column="currentStatus" />
+        <result property="messageContent" column="messageContent" />
     </resultMap>
     <sql id="MessageInfoColumns">
         MessageInfo.messageId,MessageInfo.recieverId,MessageInfo.senderId,MessageInfo.sendDateTime,
-        MessageInfo.startTime,MessageInfo.endTime,MessageInfo.currentStatus
+        MessageInfo.startTime,MessageInfo.endTime,MessageInfo.currentStatus,MessageInfo.messageContent
     </sql>
     <sql id="InsertMessageColumns">
-         messageId,recieverId,senderId,sendDateTime,startTime,endTime,currentStatus
+         messageId,recieverId,senderId,sendDateTime,startTime,endTime,currentStatus,messageContent
     </sql>
 
     <insert id="insertMessageInfo" flushCache="true" timeout="20000" parameterType="net.blf2.entity.MessageInfo">
         INSERT INTO MessageInfo VALUES (
         #{messageId},#{recieverId},#{senderId},#{sendDateTime},#{startTime},#{endTime},
-        #{currentStatus}
+        #{currentStatus},#{messageContent}
         )
     </insert>
 
@@ -29,7 +30,7 @@
         INSERT INTO MessageInfo
         <foreach collection="list" index="index" item="message"  separator=" UNION ALL ">
             SELECT #{message.messageId},#{message.recieverId},#{message.senderId},#{message.sendDateTime},
-            #{message.startTime},#{message.endTime},#{message.currentStatus}
+            #{message.startTime},#{message.endTime},#{message.currentStatus},#{messageContent}
         </foreach>
     </insert>
 
@@ -42,17 +43,20 @@
             <if test="senderId != null">
                 senderId = #{senderId},
             </if>
-            <if test="sendDateTime">
+            <if test="sendDateTime != null">
                 sendDateTime= #{sendDateTime},
             </if>
-            <if test="startTime">
+            <if test="startTime != null">
                 startTime = #{startTime},
             </if>
-            <if test="endTime">
+            <if test="endTime != null">
                 endTime = #{endTime},
             </if>
             <if test="currentStatus != null">
-                currentStatus = #{currentStatus}
+                currentStatus = #{currentStatus},
+            </if>
+            <if test="messageContent != null">
+                messageContent = #{messageContent}
             </if>
         </set>
         WHERE
@@ -77,7 +81,7 @@
     <select id="queryMessageInfoAll" resultMap="MessageResultMap">
         SELECT
         <include refid="MessageInfoColumns"/>
-        FROM MessageInfo
+        FROM MessageInfo ORDER BY sendDateTime
     </select>
     <select id="queryMessageInfosByRecieverId" resultMap="MessageResultMap" parameterType="String">
         SELECT

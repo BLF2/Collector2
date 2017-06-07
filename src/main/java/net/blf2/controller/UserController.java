@@ -205,12 +205,15 @@ public class UserController {
         if(LoginUtil.getCurrentUser() == null)
             return returnError("未登录，不能进行此操作");
         UserInfo updUser = new UserInfo();
+        UserRoleInfo loginUserRoleInfo = LoginUtil.getCurrentUser().getUserRoleInfo();
        // UserInfo queryUser = userService.queryUserInfoByUserNum(userNum);
-        updUser.setUserNum(userNum);
+        if(Consts.ADMIN_ROLE_NAME.equals(loginUserRoleInfo.getUserRoleName())) {
+            updUser.setUserNum(userNum);
+            updUser.setUserNote(userNote);
+            updUser.setUserMajorityClass(userMajorityClass);
+        }
         updUser.setUserName(userName);
         updUser.setUserPswd(userPswd);
-        updUser.setUserNote(userNote);
-        updUser.setUserMajorityClass(userMajorityClass);
         updUser.setUserPhone(userPhone);
         UserRoleInfo userRoleInfo = userRoleService.queryUserRoleInfoByUserRoleId(userRoleInfoId);
         if(userRoleInfo == null){
@@ -296,9 +299,16 @@ public class UserController {
         }
         return returnError("非法操作");
     }
-    @RequestMapping(value = "/toMonitorManager",method = RequestMethod.POST)
+    @RequestMapping(value = "/toMonitorManager")
     public ModelAndView toMonitorManager(ModelAndView model){
         if(LoginUtil.cuurentUserIsMonitor()){
+            return returnIndexByRole(LoginUtil.getCurrentUser());
+        }
+        return returnError("未登录或者未授权");
+    }
+    @RequestMapping(value = "toPrimaryManager")
+    public ModelAndView toPrimaryManager(){
+        if(LoginUtil.currentUserIsPrimary()){
             return returnIndexByRole(LoginUtil.getCurrentUser());
         }
         return returnError("未登录或者未授权");
