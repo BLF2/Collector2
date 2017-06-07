@@ -53,7 +53,7 @@ public class UserController {
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public ModelAndView register(@RequestParam("userNum")String userNum,@RequestParam("userPswd")
                                  String userPswd,@RequestParam("userName")String userName,
-                                 @RequestParam("identity")String identity,@RequestParam("majorityClass")
+                                 @RequestParam("identity")String identity,
                                  String majorityClass,@RequestParam("userPhone")String userPhone,
                                  String majorityName,String userGrade,String classNum){
         ModelAndView model = new ModelAndView();
@@ -62,8 +62,12 @@ public class UserController {
         userInfo.setUserPswd(userPswd);
         userInfo.setUserName(userName);
         userInfo.setUserPhone(userPhone);
-        if("0".equals(majorityClass)){
+        if("primary".equals(identity)){
+            userInfo.setUserMajorityClass(majorityClass);
+        }else if("monitor".equals(identity)){
             userInfo.setUserMajorityClass(majorityName+userGrade+classNum);
+        }else{
+            return returnError("缺少必要信息，注册失败");
         }
         UserRoleInfo userRoleInfo = null;
         if(Consts.MONITOR_ROLE_NAME.equals(identity)) {
@@ -91,6 +95,9 @@ public class UserController {
         }
         try {
             userService.insertUserInfo(userInfo);
+            if(classService.queryClassIdByMonitorId(userNum) != null ||
+                    classService.queryUserInfosByMojrityClass(majorityName+userGrade+classNum) != null)
+                return returnError("信息已存在");
             if(classInfo != null)
                 classService.insertClassInfo(classInfo);
         }catch (RuntimeException re){
@@ -99,8 +106,10 @@ public class UserController {
             model.setViewName("error");
             return  model;
         }
-        if(Consts.PRIMARY_ROLE_NAME.equals(userRoleInfo.getUserRoleName()))
+        if(Consts.PRIMARY_ROLE_NAME.equals(userRoleInfo.getUserRoleName())) {
+            LoginUtil.logIn(userInfo);
             return returnIndexByRole(userInfo);
+        }
         model.addObject("loginError","请等待管理员审核.");
         model.addObject("loginErrorClass","alert alert-success");
         model.setViewName("index");

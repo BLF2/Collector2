@@ -20,8 +20,9 @@
     <div class="row">
         <div th:replace="framework::AdminManagerPageLeft('','active','','','')"></div>
         <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div th:replace="framework::operatorMessage"></div>
             <h2>班级信息</h2>
-            <table class="table table-bordered">
+            <table class="table table-bordered" id="classInfoTable">
                 <tr>
                     <td>班级</td>
                     <td>专业名称</td>
@@ -93,6 +94,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
                     <button type="button" class="btn btn-primary">保存</button>
                 </div>
+                <input type="hidden" name="editClassId" id="editClassId" />
             </form>
         </div>
     </div>
@@ -107,12 +109,14 @@
         document.getElementById('editMajorityName').value=document.getElementById('majorityName'+id).innerHTML;
         document.getElementById('editClassGrade').value=document.getElementById('classGrade'+id).innerHTML;
         document.getElementById('editClassNum').value=document.getElementById('classNum'+id).innerHTML;
+        document.getElementById("editClassId").setAttribute("value",id);
     }
     function addClass() {
         document.getElementById('classEditorForm').setAttribute('action','/Class/insertClass');
         document.getElementById('editMajorityName').value='';
         document.getElementById('editClassGrade').value='';
         document.getElementById('editClassNum').value='';
+        document.getElementById("editClassId").setAttribute("value","");
     }
 </script>
 </html>
