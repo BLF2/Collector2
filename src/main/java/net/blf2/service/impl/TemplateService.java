@@ -140,10 +140,14 @@ public class TemplateService {
         if(MongoOperator.findDocumentById(databaseName,collectionForResult,resultMap) != null)
         {
             resultMap.put(Consts.TEMPLATE_ID,formResult.getTemplateId());
+            resultMap.put(Consts.INTRODUCTION_STRING,formResult.getIntroductionString());
+            resultMap.put(Consts.SUBMIT_DATE_TIME,formResult.getSubmitDateTime());
             resultMap.put(Consts.SUBMITER_ID,formResult.getSubmiterId());
             resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));
             MongoOperator.updateDocument(databaseName,collectionForResult,resultMap);
         }else {
+            resultMap.put(Consts.INTRODUCTION_STRING,formResult.getIntroductionString());
+            resultMap.put(Consts.SUBMIT_DATE_TIME,formResult.getSubmitDateTime());
             resultMap.put(Consts.TEMPLATE_ID,formResult.getTemplateId());
             resultMap.put(Consts.SUBMITER_ID,formResult.getSubmiterId());
             resultMap.put(Consts.FORM_RESULT_INFO,gson.toJson(formResult));

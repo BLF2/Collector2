@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <div th:replace="framework::BootStrapFile"></div>
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet"/>
+    <link th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet" />
+    <script th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+    <title>个人管理界面</title>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+<div class="container-fluid">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="/">Collector2</a>
+    </div>
+    <div th:replace="framework::loginandlogout">
+    </div>
+</div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <h3>我的历史提交</h3>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <div th:replace="framework::operatorMessage"></div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>序号</td>
+                        <td>名称</td>
+                        <td>提交时间</td>
+                        <td>内容</td>
+                    </tr>
+                    <tr th:each="formResult : ${formResultList}">
+                        <td th:text="${formResultStat.count}"></td>
+                        <td th:text="${formResult.introductionString}"></td>
+                        <td th:text="${formResult.submitDateTime}"></td>
+                        <td th:text="${formResult.formResultMap}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -56,4 +56,6 @@ public class Consts {
     public static final String CREATE_NUM = "createNum";
     public static final String SUBMITER_ID = "submiterId";
     public static final String TEMPLATE_ID = "templateId";
+    public static final String INTRODUCTION_STRING = "introductionString";
+    public static final String SUBMIT_DATE_TIME = "submitDateTime";
 }

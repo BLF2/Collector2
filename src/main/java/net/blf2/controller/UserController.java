@@ -9,6 +9,7 @@ import net.blf2.service.IUserService;
 import net.blf2.service.impl.CheckRuleService;
 import net.blf2.util.Consts;
 import net.blf2.util.LoginUtil;
+import org.apache.catalina.User;
 import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -63,7 +64,9 @@ public class UserController {
         userInfo.setUserName(userName);
         userInfo.setUserPhone(userPhone);
         if("primary".equals(identity)){
-            userInfo.setUserMajorityClass(majorityClass);
+            ClassInfo classInfo = classService.queryClassInfoByClassId(majorityClass);
+            String className = classInfo != null ? classInfo.getMajorityClass() : "defaultClassInfo";
+            userInfo.setUserMajorityClass(className);
         }else if("monitor".equals(identity)){
             userInfo.setUserMajorityClass(majorityName+userGrade+classNum);
         }else{
@@ -95,8 +98,8 @@ public class UserController {
         }
         try {
             userService.insertUserInfo(userInfo);
-            if(classService.queryClassIdByMonitorId(userNum) != null ||
-                    classService.queryUserInfosByMojrityClass(majorityName+userGrade+classNum) != null)
+            if(Consts.MONITOR_ROLE_NAME.equals(userRoleInfo.getUserRoleName()) && (classService.queryClassIdByMonitorId(userNum) != null ||
+                    classService.queryUserInfosByMojrityClass(majorityName+userGrade+classNum).isEmpty()))
                 return returnError("信息已存在");
             if(classInfo != null)
                 classService.insertClassInfo(classInfo);
@@ -150,7 +153,7 @@ public class UserController {
         LoginUtil.logIn(userInfo);
         return returnIndexByRole(userInfo);
     }
-    @RequestMapping("/logOut")
+    @RequestMapping("/logout")
     public ModelAndView logOut(ModelAndView model, HttpSession httpSession, HttpServletResponse response){
         UserInfo loginUserInfo = (UserInfo) httpSession.getAttribute(Consts.CURRENT_USER);
         if(loginUserInfo == null){
@@ -229,8 +232,17 @@ public class UserController {
             model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，用户角色设定错误。");
             return model;
         }
+        UserInfo loginUser = LoginUtil.getCurrentUser();
+        if(loginUser.getUserNum().equals(userNum)){
+            loginUser.setUserNote(userNote);
+            loginUser.setUserMajorityClass(userMajorityClass);
+            loginUser.setUserName(userName);
+            loginUser.setUserRoleInfo(userRoleInfo);
+            loginUser.setUserPswd(userPswd);
+        }
         updUser.setUserRoleInfo(userRoleInfo);
         if(LoginUtil.currentUserIsAdmin()){
+            updUser.setUserNum(userNum);
             try {
                 userService.updateUserInfo(updUser);
             }catch (Exception ex){
@@ -241,8 +253,8 @@ public class UserController {
             model.addObject(Consts.OPRERATOR_MESSAGE,"操作成功.");
             return returnIndexByRole(LoginUtil.getCurrentUser());
         }else if(LoginUtil.cuurentUserIsMonitor()){
+            updUser.setUserNum(userNum);
             if(LoginUtil.getCurrentUser().getUserMajorityClass().equals(userMajorityClass)){
-
                 try {
                     userService.updateUserInfo(updUser);
                 }catch (Exception ex){
@@ -256,7 +268,9 @@ public class UserController {
             model.addObject(Consts.OPRERATOR_MESSAGE,"操作失败，非本班同学。");
             return returnIndexByRole(LoginUtil.getCurrentUser());
         }else if(LoginUtil.currentUserIsPrimary()){
+            updUser.setUserNum(userNum);
             if(LoginUtil.getCurrentUser().getUserNum().equals(userNum)){
+                updUser.setUserNote("1");
                 try {
                     userService.updateUserInfo(updUser);
                 }catch (Exception ex){

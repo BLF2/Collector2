@@ -22,8 +22,6 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li th:class="${homeq}"><a href="#">Home</a></li>
-                    <li th:class="${aboutq}"><a href="#about">About</a></li>
-                    <li th:class="${contactq}"><a href="#contact">Contact</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li th:if="${#httpServletRequest.getSession() != null}" th:text="${#httpServletRequest.getSession().getAttribute('CurrentUser')} != null ? '您好，'+${#httpServletRequest.getSession().getAttribute('CurrentUser').getUserName()} : '未登录' "></li>
@@ -50,7 +48,6 @@
             <div  class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li th:class="${MyFunc}"><a href="#">我的功能</a></li>
-                    <li th:class="${MyMessage}"><a href="#about">我的消息</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li th:if="${#httpServletRequest.getSession() != null}" th:text="${#httpServletRequest.getSession().getAttribute('CurrentUser')} != null ? '您好，'+${#httpServletRequest.getSession().getAttribute('CurrentUser').getUserName()} : '未登录' "></li>
@@ -90,6 +87,15 @@
         <br />
     </ul>
 </div>
+</div>
+<div th:fragment="loginandlogout">
+    <div class="nav navbar-nav navbar-right">
+        <p style="color: white" th:if="${#httpServletRequest.getSession() != null and #httpServletRequest.getSession().getAttribute('CurrentUser') != null}"
+           th:text="'您好，'+${#httpServletRequest.getSession().getAttribute('CurrentUser').getUserName()}"></p>
+        <a href="/User/logout" style="color: white">
+        注销
+        </a>
+    </div>
 </div>
 </body>
 </html>
