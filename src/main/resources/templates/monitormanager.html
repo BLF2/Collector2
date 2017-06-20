@@ -15,6 +15,8 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="/">Collector2</a>
         </div>
+        <div th:replace="framework::loginandlogout">
+        </div>
     </div>
 </nav>
 <div th:include="framework::operatorMessage"></div>
@@ -29,6 +31,8 @@
                 <li><a href="/Submit/toMonitorsDiv">查看我发布的信息提交</a></li>
                 <br />
                 <li><a href="/Message/toMyMessages">查看我的消息</a></li>
+                <br />
+                <li><a href="/Submit/toMySubmited">查看我的提交</a></li>
                 <br />
             </ul>
         </div>

@@ -162,4 +162,23 @@ public class SubmitController {
         model.setViewName("formresults");
         return model;
     }
+    @RequestMapping("toMySubmited")
+    public ModelAndView toMySubmited(ModelAndView model){
+        UserInfo loginUser = LoginUtil.getCurrentUser();
+        if(loginUser == null){
+            return userController.returnError("未登录或者未授权");
+        }
+        String userNum = loginUser.getUserNum();
+        Map<String,Object>queryMap = new HashMap<>();
+        queryMap.put(Consts.SUBMITER_ID,userNum);
+        try {
+            List<FormResult> formResultList = templateService.queryResultByFilter(queryMap);
+            model.addObject("formResultList",formResultList);
+            model.setViewName("mysubmited");
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return userController.returnError("数据库出错");
+        }
+        return model;
+    }
 }
