@@ -78,6 +78,31 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+				    	<manifest>
+				        	<addClasspath>true</addClasspath>
+							<useUniqueVersions>false</useUniqueVersions>
+				            <classpathPrefix>lib/</classpathPrefix>
+				            <mainClass>net.blf2.CollectorApplication</mainClass>
+				            </manifest>
+				            <manifestEntries>
+								<version>0.0.1</version>
+							</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
